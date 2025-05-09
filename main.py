@@ -1,14 +1,21 @@
 from PPlay.window import *
 
+import config
+import states.jogo as jogo
+
 def init():
-    global janela;
-    
-    janela = Window(1000,800)
-    janela.set_title("Curupira Survival")
+    config.janela = Window(1000,800)
+    config.janela.set_title("Curupira Survival")
+
+    # TECLADO
+    config.teclado = config.janela.get_keyboard()
 
 init()
 
-while True:
-    janela.set_background_color([100,100,100])
+config.CONTROLADOR = config.JOGO
 
-    janela.update()
+# LOOP PRINCIPAL
+while True:
+    match (config.CONTROLADOR):
+        case config.JOGO:
+            jogo.comecar_jogo()
