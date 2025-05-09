@@ -22,7 +22,8 @@ def comecar_jogo():
         delta_t = config.janela.delta_time()
 
         # VISUAL
-        config.janela.set_background_color([0,25,0])
+        #config.janela.set_background_color([0,0,40])
+        config.janela.set_background_color([28,93,42])
         
         player.draw()
         javali.draw()

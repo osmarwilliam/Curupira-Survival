@@ -1,6 +1,7 @@
 global janela
 
 global teclado
+global mouse
 
 # CONTROLADOR DOS ESTADOS DO JOGO
 global controlador
