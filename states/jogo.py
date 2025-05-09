@@ -4,56 +4,69 @@ import random
 
 import config
 
+lista_objetos = []
+
+VEL_JOGADOR = 500
+
+def objeto_spawn():
+    novo_objeto = {
+        "x": 100, 
+        "y": 100,
+    }
+
+    lista_objetos.append(novo_objeto)
+
+def atualizar_objeto(objeto, movimento_jogador_x, movimento_jogador_y, delta_t):
+     objeto["x"] += movimento_jogador_x * VEL_JOGADOR * delta_t
+     objeto["y"] += movimento_jogador_y * VEL_JOGADOR * delta_t
+
+def desenhar_objeto(objeto):
+    objeto_visual = Sprite("assets/javali.png", frames = 2)
+    objeto_visual.set_position(objeto["x"], objeto["y"])
+    objeto_visual.draw()
+
 def comecar_jogo():
     player = Sprite("assets/curupira.png", frames = 2)
     player.set_loop(0)
     player.set_total_duration(0)
-    player.set_position(config.janela.width/2, config.janela.height/2)
+    player.set_position((config.janela.width-player.width)/2, (config.janela.height - player.height)/2)
 
-    javali = Sprite("assets/javali.png", frames = 2)
-    javali.set_loop(0)
-    javali.set_total_duration(0)
-    javali.set_position(random.randint(0,config.janela.width), random.randint(0,config.janela.height))
-
-    vel_jogador = 500
+    objeto_spawn()
     vel_javali = 150
 
     while True:
         delta_t = config.janela.delta_time()
 
-        # VISUAL
-        #config.janela.set_background_color([0,0,40])
-        config.janela.set_background_color([28,93,42])
-        
-        player.draw()
-        javali.draw()
-        config.janela.update()
-
         # LÓGICA
         if (config.teclado.key_pressed("ESC")):
-            config.janela.close()
+            config.CONTROLADOR = config.MENU
+            return 0
+
+        movimento_jogador_x = 0
+        movimento_jogador_y = 0
 
         if config.teclado.key_pressed("W"):
-            player.y -= vel_jogador * delta_t
+            movimento_jogador_y = 1
         elif config.teclado.key_pressed("S"):
-            player.y += vel_jogador * delta_t
+            movimento_jogador_y = -1
 
         if config.teclado.key_pressed("A"):
-            player.x -= vel_jogador * delta_t
+            movimento_jogador_x = 1
             player.set_curr_frame(1)
         elif config.teclado.key_pressed("D"):
-            player.x += vel_jogador * delta_t
+            movimento_jogador_x = -1
             player.set_curr_frame(0)
 
-        # MOVIMENTAÇÃO IA (SERÁ TUDO SUBSTITUIDO POR UM OFFSET)
-        #if javali.x > player.x:
-        #    javali.x -= vel_javali * delta_t
-        #    javali.set_curr_frame(1)
-        #else:
-        #    javali.x += vel_javali * delta_t
-        #    javali.set_curr_frame(0)
+        config.janela.set_background_color([28,93,42])
+
+        for objeto in lista_objetos:
+            print(objeto["x"])
+            print(objeto["y"])
+            atualizar_objeto(objeto, movimento_jogador_x, movimento_jogador_y, delta_t)
+            desenhar_objeto(objeto)
         
-        #if javali.y > player.y:
-        #    javali.y -= vel_javali * delta_t
-        #elif javali.y < player.y:
-        #    javali.y += vel_javali * delta_t
+        player.draw()
+        config.janela.update()
+
+
+        #TODO: MOVIMENTAÇÃO DA IA
