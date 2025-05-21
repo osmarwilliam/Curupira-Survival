@@ -3,16 +3,18 @@ from PPlay.sprite import *
 import random
 
 import config
+import ui
+import player
 
 lista_objetos = []
 
-VEL_JOGADOR = 500
+start_time = None
 
 def objeto_spawn(tipo):
     novo_objeto = {
         "tipo": tipo.upper(),
-        "x": random.randint(0,config.janela.width), 
-        "y": random.randint(0,config.janela.height),
+        "x": random.randint(0,config.janela.width-50), 
+        "y": random.randint(0,config.janela.height-50),
     }
     
     match novo_objeto["tipo"]:
@@ -20,32 +22,49 @@ def objeto_spawn(tipo):
             novo_objeto["HP"] = 150
         case "LENHADOR":
             novo_objeto["HP"] = 100
+        case "CACADOR":
+            novo_objeto["HP"] = 100
 
     lista_objetos.append(novo_objeto)
 
-def atualizar_objeto(objeto, movimento_jogador_x, movimento_jogador_y, delta_t):
-     objeto["x"] += movimento_jogador_x * VEL_JOGADOR * delta_t
-     objeto["y"] += movimento_jogador_y * VEL_JOGADOR * delta_t
+def atualizar_objetos(movimento_jogador_x, movimento_jogador_y, delta_t):
+     for objeto in lista_objetos:
+        objeto["x"] += movimento_jogador_x * player.VELOCIDADE * delta_t
+        objeto["y"] += movimento_jogador_y * player.VELOCIDADE * delta_t
 
-def desenhar_objeto(objeto):
-    match objeto["tipo"]:
-        case "JAVALI":
-            objeto_visual = Sprite("assets/javali.png", frames = 2)
-        case "LENHADOR":
-            objeto_visual = Sprite("assets/lenhador.png", frames = 1)
-    
-    objeto_visual.set_position(objeto["x"], objeto["y"])
-    objeto_visual.draw()
+def desenhar_objetos():
+    for objeto in lista_objetos:
+        # Depois para melhor eficiência de memória fazer sprite sharing
+        match objeto["tipo"]:
+            case "JAVALI":
+                objeto_visual = Sprite("assets/javali.png", frames = 2)
+            case "LENHADOR":
+                objeto_visual = Sprite("assets/lenhador.png")
+            case "CACADOR":
+                objeto_visual = Sprite("assets/cacador.png")
+            case "BAU":
+                objeto_visual = Sprite("assets/bau.png")
+            case "COMIDA":
+                objeto_visual = Sprite("assets/comida.png")
+            case "RELOGIO":
+                objeto_visual = Sprite("assets/relogio.png")
+
+        objeto_visual.set_position(objeto["x"], objeto["y"])
+        objeto_visual.draw()
 
 def comecar_jogo():
-    player = Sprite("assets/curupira.png", frames = 2)
-    player.set_loop(0)
-    player.set_total_duration(0)
-    player.set_position((config.janela.width-player.width)/2, (config.janela.height - player.height)/2)
+    player.spawn()
 
     objeto_spawn("JAVALI")
     objeto_spawn("LENHADOR")
-    vel_javali = 150
+    objeto_spawn("CACADOR")
+
+    objeto_spawn("BAU")
+    objeto_spawn("COMIDA")
+    objeto_spawn("RELOGIO")
+
+    global start_time
+    start_time = pygame.time.get_ticks()
 
     while True:
         delta_t = config.janela.delta_time()
@@ -65,19 +84,19 @@ def comecar_jogo():
 
         if config.teclado.key_pressed("A"):
             movimento_jogador_x = 1
-            player.set_curr_frame(1)
+            player.change_side("LEFT")
         elif config.teclado.key_pressed("D"):
             movimento_jogador_x = -1
-            player.set_curr_frame(0)
+            player.change_side("RIGHT")
 
         config.janela.set_background_color([28,93,42])
 
-        for objeto in lista_objetos:
-            print(objeto["HP"])
-            atualizar_objeto(objeto, movimento_jogador_x, movimento_jogador_y, delta_t)
-            desenhar_objeto(objeto)
+        atualizar_objetos(movimento_jogador_x, movimento_jogador_y, delta_t)
+        desenhar_objetos()
         
         player.draw()
+
+        ui.barra_xp()
         config.janela.update()
 
 
