@@ -1,27 +1,47 @@
 from PPlay.window import *
+from PPlay.sprite import *
 
-import config
 import states.jogo as jogo
 import states.menu as menu
 
+sys_state = {}
+
+def load_sprites():
+    sprites = {
+        # SPRITE BOTÕES
+        "botao_jogar": Sprite("assets/botao-jogar.png"),
+        "botao_sair": Sprite("assets/botao-sair.png"),
+
+        # SPRITE MONSTROS
+        "JAVALI": Sprite("assets/javali.png", frames = 2),
+        "LENHADOR": Sprite("assets/lenhador.png"),
+        "CACADOR": Sprite("assets/cacador.png"),
+
+        # SPRITE ITENS AUXILIARES
+        "COMIDA": Sprite("assets/comida.png"),
+        "RELOGIO": Sprite("assets/relogio.png"),
+        "BAU": Sprite("assets/bau.png"),
+
+        "FLECHA": Sprite("assets/flecha.png")
+    }
+
+    return sprites
+
 def init():
-    config.janela = Window(1000,800)
-    config.janela.set_title("Curupira Survival")
+    sys_state["WINDOW"] = Window(1000,800)
+    sys_state["WINDOW"].set_title("Curupira Survival")
 
-    # TECLADO
-    config.teclado = config.janela.get_keyboard()
+    sys_state["KEYBOARD"] = sys_state["WINDOW"].get_keyboard()
+    sys_state["MOUSE"] = sys_state["WINDOW"].get_mouse()
 
-    # MOUSE
-    config.mouse = config.janela.get_mouse()
+    sys_state["controlador"] = "MENU" # Inicia o jogo pelo menu
+
+    sys_state["SPRITES"] = load_sprites()
 
 init()
 
-config.CONTROLADOR = config.MENU
-
-# LOOP PRINCIPAL
 while True:
-    match (config.CONTROLADOR):
-        case config.JOGO:
-            jogo.comecar_jogo()
-        case config.MENU:
-            menu.mostrar_menu(1)
+    if sys_state["controlador"] == "JOGO":
+        jogo.comecar_jogo(sys_state)
+    elif sys_state["controlador"] == "MENU":
+        menu.mostrar_menu(sys_state)

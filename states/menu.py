@@ -1,38 +1,27 @@
-from PPlay.sprite import *
+from utils import clicou
 
-import config
+def mostrar_menu(sys_state):
+    WINDOW = sys_state["WINDOW"]
 
-def debug():
-    barra_central = Sprite("assets/barra.png", frames = 1)
-    barra_central.set_position((config.janela.width - barra_central.width)/2, (config.janela.height-barra_central.height)/2)
-    barra_central.draw()
-
-def mostrar_menu(debug_mode):
-    while True:
-        #VISUAL
-        config.janela.set_background_color([22,158,38])
-
-        if debug_mode: 
-            debug()
+    WINDOW.set_background_color([22,158,38])
         
-        botao_jogar = Sprite("assets/botao-jogar.png", frames = 1)
-        
-        tamanho_x_botao = botao_jogar.width
-        tamanho_y_botao = botao_jogar.height
-        
-        botao_jogar.set_position((config.janela.width - tamanho_x_botao)/2, config.janela.height/2 - tamanho_y_botao - 20/2)
-        botao_sair = Sprite("assets/botao-sair.png", frames = 1)
-        botao_sair.set_position( (config.janela.width - tamanho_x_botao)/2, config.janela.height/2 + 20/2)
+    botao_jogar = sys_state["SPRITES"]["botao_jogar"]
 
-
-        botao_jogar.draw()
-        botao_sair.draw()
+    botao_lar = botao_jogar.width
+    botao_alt = botao_jogar.height
         
-        config.janela.update()
+    botao_jogar.set_position((WINDOW.width - botao_lar)/2, WINDOW.height/2 - botao_alt - 20/2)
+    
+    botao_sair = sys_state["SPRITES"]["botao_sair"]
+    botao_sair.set_position( (WINDOW.width - botao_lar)/2, WINDOW.height/2 + 20/2)
 
-        #LÓGICO
-        if config.mouse.is_button_pressed(1) and config.mouse.is_over_object(botao_jogar):
-            config.CONTROLADOR = config.JOGO
-            return 0
-        elif config.mouse.is_button_pressed(1) and config.mouse.is_over_object(botao_sair):
-            config.janela.close()
+    botao_jogar.draw()
+    botao_sair.draw()
+        
+    WINDOW.update()
+
+    #LÓGICO
+    if clicou(sys_state["MOUSE"], botao_jogar):
+        sys_state["controlador"] = "JOGO"
+    elif clicou(sys_state["MOUSE"], botao_sair):
+        WINDOW.close()

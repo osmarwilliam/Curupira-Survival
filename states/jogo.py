@@ -1,103 +1,102 @@
+# TODO LIST:
+# TORNAR MAIS LEGÍVEL SE POSSÍVEL
+# 2 - COLISÃO E MORTE DE INIMIGOS
+# 2.1 - CONTADOR DE MORTES
+# 3 - PLAYER STATS
+# 4 - XP DROP
+
+# TODO: ARRUMAR CAMERA OFFSET QUE QUEBROU O JOGO
+
 from PPlay.sprite import *
 
 import random
 
-import config
-import ui
+from ui import desenhar_ui
 import player
+import enemies
+import objects
 
-lista_objetos = []
+cam_offset = [0,0]
 
-start_time = None
+start_time = None  
 
-def objeto_spawn(tipo):
-    novo_objeto = {
-        "tipo": tipo.upper(),
-        "x": random.randint(0,config.janela.width-50), 
-        "y": random.randint(0,config.janela.height-50),
-    }
-    
-    match novo_objeto["tipo"]:
-        case "JAVALI":
-            novo_objeto["HP"] = 150
-        case "LENHADOR":
-            novo_objeto["HP"] = 100
-        case "CACADOR":
-            novo_objeto["HP"] = 100
+def update_scenario(delta_t): 
+    # ATUALIZA AS COORDENADAS REAIS DO CENÁRIO
+    # Obs.: coordenadas reais de objetos estáticos não são atualizadas
+     
+    for object in objects.objects_list:
+        if object["TYPE"] == "bullet":
+            dir_x = object["TARGET_X"] - object["X"]
+            dir_y = object["TARGET_Y"] - object["Y"]
 
-    lista_objetos.append(novo_objeto)
+            distancia = (dir_x**2 + dir_y**2)**0.5 # Teorema de Pitágoras
 
-def atualizar_objetos(movimento_jogador_x, movimento_jogador_y, delta_t):
-     for objeto in lista_objetos:
-        objeto["x"] += movimento_jogador_x * player.VELOCIDADE * delta_t
-        objeto["y"] += movimento_jogador_y * player.VELOCIDADE * delta_t
+            if distancia > 0: # Evita divisão por 0
+                dir_x /= distancia
+                dir_y /= distancia
 
-def desenhar_objetos():
-    for objeto in lista_objetos:
-        # Depois para melhor eficiência de memória fazer sprite sharing
-        match objeto["tipo"]:
-            case "JAVALI":
-                objeto_visual = Sprite("assets/javali.png", frames = 2)
-            case "LENHADOR":
-                objeto_visual = Sprite("assets/lenhador.png")
-            case "CACADOR":
-                objeto_visual = Sprite("assets/cacador.png")
-            case "BAU":
-                objeto_visual = Sprite("assets/bau.png")
-            case "COMIDA":
-                objeto_visual = Sprite("assets/comida.png")
-            case "RELOGIO":
-                objeto_visual = Sprite("assets/relogio.png")
+            # TODO: arrumar com o offset da camera
+            object["X"] += dir_x * 400 * delta_t # 400 -> velocidade
+            object["Y"] += dir_y * 400 * delta_t
 
-        objeto_visual.set_position(objeto["x"], objeto["y"])
-        objeto_visual.draw()
+def draw_scenario(): # DESENHA OS SPRITES NAS COORDENADAS CORRIGIDAS COM O OFFSET
+    x = 0
+    y = 1
 
-def comecar_jogo():
-    player.spawn()
+    for object in objects.objects_list:
+        object["SPRITE"].set_position(object["X"] - cam_offset[x], object["Y"] - cam_offset[y])
+        object["SPRITE"].draw()
 
-    objeto_spawn("JAVALI")
-    objeto_spawn("LENHADOR")
-    objeto_spawn("CACADOR")
+    for enemy in enemies.enemies_list:
+        enemy["SPRITE"].set_position(enemy["X"] - cam_offset[x], enemy["Y"] - cam_offset[y])
+        enemy["SPRITE"].draw()
 
-    objeto_spawn("BAU")
-    objeto_spawn("COMIDA")
-    objeto_spawn("RELOGIO")
-
+def comecar_jogo(sys_state):
     global start_time
     start_time = pygame.time.get_ticks()
 
+    WINDOW = sys_state["WINDOW"]
+    KEYBOARD = sys_state["KEYBOARD"]
+
+    player.spawn(WINDOW)
+
+    cam_offset[0] = player.player["SPRITE"].x - WINDOW.width // 2
+    cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
+
+    for _ in range(3): 
+        enemies.spawn(sys_state["SPRITES"], random.choice(["JAVALI", "LENHADOR", "CACADOR"]))
+    
     while True:
-        delta_t = config.janela.delta_time()
+        delta_t = WINDOW.delta_time()
+
 
         # LÓGICA
-        if (config.teclado.key_pressed("ESC")):
-            config.CONTROLADOR = config.MENU
+        if (KEYBOARD.key_pressed("ESC")):
+            sys_state["controlador"] = "MENU"
             return 0
 
-        movimento_jogador_x = 0
-        movimento_jogador_y = 0
+        if KEYBOARD.key_pressed("W"):
+            cam_offset[1] -= player.VELOCIDADE * delta_t
+        elif KEYBOARD.key_pressed("S"):
+            cam_offset[1] += player.VELOCIDADE * delta_t
 
-        if config.teclado.key_pressed("W"):
-            movimento_jogador_y = 1
-        elif config.teclado.key_pressed("S"):
-            movimento_jogador_y = -1
-
-        if config.teclado.key_pressed("A"):
-            movimento_jogador_x = 1
+        if KEYBOARD.key_pressed("A"):
+            cam_offset[0] -= player.VELOCIDADE * delta_t
             player.change_side("LEFT")
-        elif config.teclado.key_pressed("D"):
-            movimento_jogador_x = -1
+        elif KEYBOARD.key_pressed("D"):
+            cam_offset[0] += player.VELOCIDADE * delta_t
             player.change_side("RIGHT")
-
-        config.janela.set_background_color([28,93,42])
-
-        atualizar_objetos(movimento_jogador_x, movimento_jogador_y, delta_t)
-        desenhar_objetos()
         
-        player.draw()
+        WINDOW.set_background_color([28,93,42])
 
-        ui.barra_xp()
-        config.janela.update()
+        update_scenario(delta_t)
+        draw_scenario()
+        
+        player.draw() 
+        player.auto_attack(WINDOW, sys_state["SPRITES"], enemies.enemies_list)
 
+        desenhar_ui(WINDOW, player.player)
+        WINDOW.update()
 
         #TODO: MOVIMENTAÇÃO DA IA
+        #enemies.think()
