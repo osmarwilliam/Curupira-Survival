@@ -1,8 +1,7 @@
 import pygame
 from PPlay.sprite import *
 
-import states.jogo as jogo
-import player
+import states.game as game
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -15,7 +14,7 @@ FONTE = 'Tahoma'
 y_ui = 60  # 60 = barra_xp_height + 10 de padding
  
 def mostrar_cronometro(janela): # Mostra na tela há quanto tempo o jogador iniciou a partida
-    tempo_atual = pygame.time.get_ticks() - jogo.start_time
+    tempo_atual = pygame.time.get_ticks() - game.start_time
     segundos_decorridos = tempo_atual // 1000 # Converte em segundos
 
     # Formata o tempo (MM:SS)

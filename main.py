@@ -1,12 +1,25 @@
+# TODO LIST:
+# 1 - COLISÃO E MORTE DE INIMIGOS
+# 1.1 - CONTADOR DE MORTES
+# 3 - PLAYER STATS
+# 4 - XP DROP
+
+# BUGS CONHECIDOS:
+# - Inimigo morre mas a flecha fica parada no lugar onde ele morreu e não segue linearmente sua trajetória
+
 from PPlay.window import *
 from PPlay.sprite import *
 
-import states.jogo as jogo
-import states.menu as menu
+import states.game as game
+from states.menu import mostrar_menu
 
-sys_state = {}
+# game_sys é o dicionário que contém as principais variáveis do programa, como Window, Keyboard, Mouse e Sprites.
+game_sys = {}
 
 def load_sprites():
+    """
+    Carrega todos os sprites que serão utilizados no GAME
+    """
     sprites = {
         # SPRITE BOTÕES
         "botao_jogar": Sprite("assets/botao-jogar.png"),
@@ -28,20 +41,23 @@ def load_sprites():
     return sprites
 
 def init():
-    sys_state["WINDOW"] = Window(1000,800)
-    sys_state["WINDOW"].set_title("Curupira Survival")
+    """
+    Inicializa as principais variáveis do programa e as armazena no game_sys
+    """
+    game_sys["WINDOW"] = Window(1000,800)
+    game_sys["WINDOW"].set_title("Curupira Survival")
 
-    sys_state["KEYBOARD"] = sys_state["WINDOW"].get_keyboard()
-    sys_state["MOUSE"] = sys_state["WINDOW"].get_mouse()
+    game_sys["KEYBOARD"] = game_sys["WINDOW"].get_keyboard()
+    game_sys["MOUSE"] = game_sys["WINDOW"].get_mouse()
 
-    sys_state["controlador"] = "MENU" # Inicia o jogo pelo menu
+    game_sys["STATE_SWITCHER"] = "MENU"
 
-    sys_state["SPRITES"] = load_sprites()
+    game_sys["SPRITES"] = load_sprites() 
 
 init()
 
 while True:
-    if sys_state["controlador"] == "JOGO":
-        jogo.comecar_jogo(sys_state)
-    elif sys_state["controlador"] == "MENU":
-        menu.mostrar_menu(sys_state)
+    if game_sys["STATE_SWITCHER"] == "GAME":
+        game.run(game_sys)
+    elif game_sys["STATE_SWITCHER"] == "MENU":
+        mostrar_menu(game_sys)

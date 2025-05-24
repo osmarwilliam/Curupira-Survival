@@ -4,12 +4,12 @@ from PPlay.sprite import *
 
 import pygame
 
-import states.jogo as jogo
+import states.game as game
 import objects
 
 player = {}
 VELOCIDADE = 500
-ultimo_ataque = 0
+last_player_attack = 0
 
 def spawn(janela):
     player["HP"] = 100
@@ -40,11 +40,9 @@ def change_side(side):
 debug_mode = 1
 
 def arrow_spawn(sprite, x, y, target_x, target_y):
-    global ultimo_ataque
-    ultimo_ataque = pygame.time.get_ticks()
-
     new_arrow = {
-        "TYPE": "bullet",
+        "TYPE": "ARROW",
+        "SPEED": 400,
         "X": x,
         "Y": y,
         "TARGET_X": target_x,
@@ -55,7 +53,7 @@ def arrow_spawn(sprite, x, y, target_x, target_y):
     objects.objects_list.append(new_arrow)
 
 def auto_attack(janela, sprites, enemies_list):
-    global ultimo_ataque
+    global last_player_attack
 
     player_x = player["SPRITE"].x
     player_y = player["SPRITE"].y
@@ -67,8 +65,8 @@ def auto_attack(janela, sprites, enemies_list):
     menor_distancia = float('inf')
 
     for enemy in enemies_list:
-        inimigo_x_corrigido = enemy["X"] - jogo.cam_offset[0]
-        inimigo_y_corrigido = enemy["Y"] - jogo.cam_offset[1]
+        inimigo_x_corrigido = enemy["X"] - game.cam_offset[0]
+        inimigo_y_corrigido = enemy["Y"] - game.cam_offset[1]
 
         centro_inimigo = [inimigo_x_corrigido + enemy["SPRITE"].width/2, inimigo_y_corrigido + enemy["SPRITE"].height/2]
         # Distância de pontos: sqrt((x1-x0)^2 + (y1-y0)^2)
@@ -81,13 +79,14 @@ def auto_attack(janela, sprites, enemies_list):
             centro_inimigo_y = centro_inimigo[1]
 
     # Auto Attack
-    if player["ATK-COOLDOWN"] < pygame.time.get_ticks() - ultimo_ataque:
+    if player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
         arrow_spawn(sprites["FLECHA"], 
-                    player_x + jogo.cam_offset[0], 
-                    player_y + jogo.cam_offset[1], 
-                    centro_inimigo_x + jogo.cam_offset[0], 
-                    centro_inimigo_y + jogo.cam_offset[1]
+                    player_x + game.cam_offset[0], 
+                    player_y + game.cam_offset[1], 
+                    centro_inimigo_x + game.cam_offset[0], 
+                    centro_inimigo_y + game.cam_offset[1]
                     )
+        last_player_attack = pygame.time.get_ticks()
 
     if debug_mode:
         pygame.draw.rect(janela.get_screen(), (0,255,0), (centro_player[0]-7, centro_player[1]-7, 14, 14))

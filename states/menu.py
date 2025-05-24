@@ -1,27 +1,34 @@
-from utils import clicou
+from utils import clicked
 
-def mostrar_menu(sys_state):
-    WINDOW = sys_state["WINDOW"]
+menu_bg_color = (22,158,38)
 
-    WINDOW.set_background_color([22,158,38])
-        
-    botao_jogar = sys_state["SPRITES"]["botao_jogar"]
+def mostrar_menu(game_sys):
+    """
+    Mostra o menu do jogo
+    Dependências: game_sys["WINDOW"], game_sys["SPRITES"], game_sys["MOUSE"]
+    """
 
-    botao_lar = botao_jogar.width
-    botao_alt = botao_jogar.height
-        
-    botao_jogar.set_position((WINDOW.width - botao_lar)/2, WINDOW.height/2 - botao_alt - 20/2)
+    # EXTRAÇÃO DAS DEPENDÊNCIAS DA FUNÇÃO
+    WINDOW = game_sys["WINDOW"]
+    sprites = game_sys["SPRITES"]    
+
+    WINDOW.set_background_color(menu_bg_color)
+
+    BUTTON_WIDTH = sprites["botao_jogar"].width
+    BUTTON_HEIGHT = sprites["botao_jogar"].height
+
+    play_button = sprites["botao_jogar"]
+    play_button.set_position((WINDOW.width - BUTTON_WIDTH)/2, WINDOW.height/2 - BUTTON_HEIGHT - 20/2)
     
-    botao_sair = sys_state["SPRITES"]["botao_sair"]
-    botao_sair.set_position( (WINDOW.width - botao_lar)/2, WINDOW.height/2 + 20/2)
+    exit_button = sprites["botao_sair"]
+    exit_button.set_position( (WINDOW.width - BUTTON_WIDTH)/2, WINDOW.height/2 + 20/2)
 
-    botao_jogar.draw()
-    botao_sair.draw()
+    play_button.draw()
+    exit_button.draw()
         
     WINDOW.update()
 
-    #LÓGICO
-    if clicou(sys_state["MOUSE"], botao_jogar):
-        sys_state["controlador"] = "JOGO"
-    elif clicou(sys_state["MOUSE"], botao_sair):
+    if clicked(game_sys["MOUSE"], play_button):
+        game_sys["STATE_SWITCHER"] = "GAME"
+    elif clicked(game_sys["MOUSE"], exit_button):
         WINDOW.close()
