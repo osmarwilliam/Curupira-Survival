@@ -1,11 +1,9 @@
 # TODO LIST:
-# 1 - COLISÃO E MORTE DE INIMIGOS
-# 1.1 - CONTADOR DE MORTES
-# 3 - PLAYER STATS
-# 4 - XP DROP
+# 1 - modificar no 'ui' o xp_max conforme o nível do jogador, talvez mudar para o módulo do player
+# 2 - PLAYER STATS
 
 # BUGS CONHECIDOS:
-# X
+# - bug na colisão da flecha com o caçador especificamente
 
 from PPlay.window import *
 from PPlay.sprite import *
@@ -15,11 +13,6 @@ from states.menu import mostrar_menu
 
 # game_sys é o dicionário que contém as principais variáveis do programa, como Window, Keyboard, Mouse e Sprites.
 game_sys = {}
-
-# SPRITE ITENS AUXILIARES P/A DEPOIS IMPLEMENTAR
-# "COMIDA": Sprite("assets/comida.png")
-# "RELOGIO": Sprite("assets/relogio.png")
-# "BAU": Sprite("assets/bau.png")
 
 def init():
     """

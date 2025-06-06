@@ -2,6 +2,7 @@ import pygame
 from PPlay.sprite import *
 
 import states.game as game
+from player import player
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -47,14 +48,29 @@ def mostrar_itens(janela): # Desenha os "contâiners" dos itens
     pygame.draw.rect(janela.get_screen(), GRAY, (120, y_ui+5*2 + 30, 30, 30))
     pygame.draw.rect(janela.get_screen(), GRAY, (155, y_ui+5*2 + 30, 30, 30))
 
-def desenhar_ui(janela, player):
+def desenhar_barra_xp(janela):
+    # TODO: Arrumar esse código repetido
     barra_xp_width = janela.width
     barra_xp_height = 50
+
+    # TODO: modificar xp_max conforme o nível do jogador
+    xp_max = 100
+    xp_ratio = min(player["XP"] / xp_max, 1)
+    xp_fill_width = int(barra_xp_width * xp_ratio)
 
     # DESENHA A BARRA DE XP VAZIA
     pygame.draw.rect(janela.get_screen(), BLACK, (0,0, barra_xp_width, barra_xp_height))
     pygame.draw.rect(janela.get_screen(), (255,249,89), (0,0, barra_xp_width, barra_xp_height),2)
+
+    # PREENCHE A BARRA
+    pygame.draw.rect(janela.get_screen(), (143,250,55), (0,0, xp_fill_width, barra_xp_height))
+
+def desenhar_ui(janela, player):
+    barra_xp_width = janela.width
+    barra_xp_height = 50
     
+    desenhar_barra_xp(janela)
+
     # MOSTRA O NÍVEL DO JOGADOR
     janela.draw_text( "LVL " + str(player["LEVEL"]), barra_xp_width - 70, barra_xp_height/4 , size = 25, color = WHITE, font_name = FONTE, bold = False, italic = False)
 

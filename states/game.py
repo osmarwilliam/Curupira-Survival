@@ -50,6 +50,9 @@ def draw_scenario():
         object["SPRITE"].set_position(object["X"] - cam_offset[0], object["Y"] - cam_offset[1])
         object["SPRITE"].draw()
 
+        if object["TYPE"] == "XP":
+            object["SPRITE"].update()
+
     for enemy in enemies.enemies_list:
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
         enemy["SPRITE"].draw()
@@ -62,10 +65,15 @@ def collision_detection():
         if object["TYPE"] == "ARROW":
             for enemy in enemies.enemies_list:
                 if object["SPRITE"].collided_perfect(enemy["SPRITE"]):
+                    objects.drop_xp(enemy)
                     objects.objects_list.remove(object)
                     enemies.enemies_list.remove(enemy)
                     player.player["ENEMIES_KILLED"] += 1
                     break
+        elif object["TYPE"] == "XP":
+            if object["SPRITE"].collided(player.player["SPRITE"]):
+                player.player["XP"] += object["VALUE"]
+                objects.objects_list.remove(object)
 
 def run(game_sys):
     global start_time, delta_t
