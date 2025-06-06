@@ -1,5 +1,7 @@
 from utils import clicked
 
+from PPlay.sprite import *
+
 menu_bg_color = (22,158,38)
 
 def mostrar_menu(game_sys):
@@ -10,17 +12,16 @@ def mostrar_menu(game_sys):
 
     # EXTRAÇÃO DAS DEPENDÊNCIAS DA FUNÇÃO
     WINDOW = game_sys["WINDOW"]
-    sprites = game_sys["SPRITES"]    
 
     WINDOW.set_background_color(menu_bg_color)
 
-    BUTTON_WIDTH = sprites["botao_jogar"].width
-    BUTTON_HEIGHT = sprites["botao_jogar"].height
+    BUTTON_WIDTH = Sprite("assets/botao-jogar.png").width
+    BUTTON_HEIGHT = Sprite("assets/botao-jogar.png").height
 
-    play_button = sprites["botao_jogar"]
+    play_button = Sprite("assets/botao-jogar.png")
     play_button.set_position((WINDOW.width - BUTTON_WIDTH)/2, WINDOW.height/2 - BUTTON_HEIGHT - 20/2)
     
-    exit_button = sprites["botao_sair"]
+    exit_button = Sprite("assets/botao-sair.png")
     exit_button.set_position( (WINDOW.width - BUTTON_WIDTH)/2, WINDOW.height/2 + 20/2)
 
     play_button.draw()

@@ -1,10 +1,11 @@
 import random
 
 from player import player
+from PPlay.sprite import *
 
 enemies_list = []
 
-def spawn(sprites, type):
+def spawn(type):
     new_enemy = {
         "TYPE": type.upper(),
         "X": random.randint(0, 800), 
@@ -13,14 +14,14 @@ def spawn(sprites, type):
     
     if new_enemy["TYPE"] == "JAVALI":
         new_enemy["HP"] = 150
-        new_enemy["SPRITE"] = sprites["JAVALI"]
+        new_enemy["SPRITE"] = Sprite("assets/javali.png", frames = 2)
     elif new_enemy["TYPE"] == "LENHADOR":
         new_enemy["HP"] = 100
         new_enemy["SPEED"] = 100
-        new_enemy["SPRITE"] = sprites["LENHADOR"]
+        new_enemy["SPRITE"] = Sprite("assets/lenhador.png")
     elif new_enemy["TYPE"] == "CACADOR":
         new_enemy["HP"] = 100
-        new_enemy["SPRITE"] = sprites["CACADOR"]
+        new_enemy["SPRITE"] = Sprite("assets/cacador.png")
     
     enemies_list.append(new_enemy)
 

@@ -59,13 +59,13 @@ def collision_detection():
     Detecta se houve alguma colisão no jogo
     """
     for object in objects.objects_list:
-        for enemy in enemies.enemies_list:
-            if object["TYPE"] == "ARROW":
-                if Collision.collided_perfect(object["SPRITE"], enemy["SPRITE"]):
+        if object["TYPE"] == "ARROW":
+            for enemy in enemies.enemies_list:
+                if object["SPRITE"].collided_perfect(enemy["SPRITE"]):
                     objects.objects_list.remove(object)
                     enemies.enemies_list.remove(enemy)
                     player.player["ENEMIES_KILLED"] += 1
-
+                    break
 
 def run(game_sys):
     global start_time, delta_t
@@ -81,8 +81,8 @@ def run(game_sys):
     cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
 
     for _ in range(3): 
-        enemies.spawn(game_sys["SPRITES"], random.choice(["JAVALI", "LENHADOR", "CACADOR"]))
-    
+        enemies.spawn(random.choice(["JAVALI", "LENHADOR", "CACADOR"]))
+
     while True:
         delta_t = WINDOW.delta_time()
 
@@ -103,17 +103,16 @@ def run(game_sys):
             player.change_side("RIGHT")
 
         WINDOW.set_background_color([28,93,42])
-
+        
+        collision_detection()
         update_scenario()
         draw_scenario()
 
         player.draw() 
 
         if enemies.enemies_list != []:
-            player.auto_attack(WINDOW, game_sys["SPRITES"], enemies.enemies_list)
+            player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
-
-        collision_detection()
 
         desenhar_ui(WINDOW, player.player)
         WINDOW.update()

@@ -39,7 +39,7 @@ def change_side(side):
 
 debug_mode = 1
 
-def arrow_spawn(sprite, x, y, target_x, target_y):
+def arrow_spawn(x, y, target_x, target_y):
     new_arrow = {
         "TYPE": "ARROW",
         "SPEED": 400,
@@ -47,12 +47,12 @@ def arrow_spawn(sprite, x, y, target_x, target_y):
         "Y": y,
         "TARGET_X": target_x,
         "TARGET_Y": target_y,
-        "SPRITE": sprite
+        "SPRITE": Sprite("assets/flecha.png")
     }
     
     objects.objects_list.append(new_arrow)
 
-def auto_attack(janela, sprites, enemies_list):
+def auto_attack(janela, enemies_list):
     global last_player_attack
 
     player_x = player["SPRITE"].x
@@ -80,8 +80,7 @@ def auto_attack(janela, sprites, enemies_list):
 
     # Auto Attack
     if player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
-        arrow_spawn(sprites["FLECHA"], 
-                    player_x + game.cam_offset[0], 
+        arrow_spawn(player_x + game.cam_offset[0], 
                     player_y + game.cam_offset[1], 
                     centro_inimigo_x + game.cam_offset[0], 
                     centro_inimigo_y + game.cam_offset[1]
