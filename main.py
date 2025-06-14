@@ -1,8 +1,8 @@
 # TODO LIST:
 # 1 - modificar no 'ui' o xp_max conforme o nível do jogador, talvez mudar para o módulo do player
 # 2 - PLAYER STATS
-# TODO: otimizar a detecção de colisão igual o do space invaders
-# TODO: Implementar cooldown nos ataques inimigos
+# 3 - Remover projéteis que saem muito da tela
+# TODO: otimizar a detecção de colisão de projéteis igual o do space invaders
 # BUGS CONHECIDOS:
 # - bug na colisão da flecha com o caçador especificamente
 # - Quando atira duas flechas, e uma já mata o inimigo, a outra não sabe o que fazer e fica parada na antiga

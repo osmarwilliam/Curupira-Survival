@@ -105,7 +105,7 @@ def run(game_sys):
     
     cam_offset[0] = player.player["SPRITE"].x - WINDOW.width // 2
     cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
-
+    
     while True:
         delta_t = WINDOW.delta_time()
 
@@ -127,7 +127,7 @@ def run(game_sys):
 
         WINDOW.set_background_color([28,93,42])
         
-        auto_wave()
+        #auto_wave()
         collision_detection()
         update_scenario()
         draw_scenario()
@@ -135,7 +135,7 @@ def run(game_sys):
         player.draw() 
 
         if enemies.enemies_list != []:
-            #player.auto_attack(WINDOW, enemies.enemies_list)
+            player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)
