@@ -49,7 +49,6 @@ def mostrar_itens(janela): # Desenha os "contâiners" dos itens
     pygame.draw.rect(janela.get_screen(), GRAY, (155, y_ui+5*2 + 30, 30, 30))
 
 def desenhar_barra_xp(janela):
-    # TODO: Arrumar esse código repetido
     barra_xp_width = janela.width
     barra_xp_height = 50
 
@@ -65,14 +64,29 @@ def desenhar_barra_xp(janela):
     # PREENCHE A BARRA
     pygame.draw.rect(janela.get_screen(), (143,250,55), (0,0, xp_fill_width, barra_xp_height))
 
+def desenhar_barra_vida(janela):
+    largura_barra_hp = 100
+    hp_max = 100
+    
+    # DESENHA A BARRA DE HP VAZIA
+    pygame.draw.rect(janela.get_screen(), BLACK, (player["SPRITE"].x - 100/4, 
+                                                  player["SPRITE"].y + player["SPRITE"].height + 5, 
+                                                  largura_barra_hp, 20))
+    
+    barra_preenchida = (player["HP"] / hp_max) * largura_barra_hp
+
+    # DESENHA A BARRA COM A VIDA ATUAL DO JOGADOR
+    pygame.draw.rect(janela.get_screen(), RED, (player["SPRITE"].x - 100/4, 
+                                                player["SPRITE"].y + player["SPRITE"].height + 5,
+                                                barra_preenchida, 20))
+
 def desenhar_ui(janela, player):
-    barra_xp_width = janela.width
     barra_xp_height = 50
     
     desenhar_barra_xp(janela)
 
     # MOSTRA O NÍVEL DO JOGADOR
-    janela.draw_text( "LVL " + str(player["LEVEL"]), barra_xp_width - 70, barra_xp_height/4 , size = 25, color = WHITE, font_name = FONTE, bold = False, italic = False)
+    janela.draw_text( "LVL " + str(player["LEVEL"]), janela.width - 70, barra_xp_height/4 , size = 25, color = WHITE, font_name = FONTE, bold = False, italic = False)
 
     # MOSTRA A QTD DE INIMIGOS MORTOS
     # Código temporário, depois aperfeiçoar
@@ -86,11 +100,4 @@ def desenhar_ui(janela, player):
     mostrar_itens(janela)
 
     # Mostra barra de vida do player
-    # Código temporário
-    pygame.draw.rect(janela.get_screen(), BLACK, (player["SPRITE"].x - 100/4, 
-                                                         player["SPRITE"].y + player["SPRITE"].height + 5, 
-                                                         100, 20))
-    
-    pygame.draw.rect(janela.get_screen(), RED, (player["SPRITE"].x - 100/4 + 2,
-                                                       player["SPRITE"].y + player["SPRITE"].height + 5 + 2,
-                                                       96, 16))
+    desenhar_barra_vida(janela)

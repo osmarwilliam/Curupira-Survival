@@ -17,7 +17,7 @@ def spawn(janela):
     player["LEVEL"] = 0
     player["ENEMIES_KILLED"] = 0
 
-    player["ATK-COOLDOWN"] = 1000
+    player["ATK-COOLDOWN"] = 2500
 
     player["SPRITE"] = Sprite("assets/curupira.png", frames = 2)
     player["SPRITE"].set_loop(0)
@@ -64,6 +64,7 @@ def auto_attack(janela, enemies_list):
     centro_inimigo_y = None
     menor_distancia = float('inf')
 
+    # Se ainda está em atk cooldown, nem faz sentido calcular isso aqui
     for enemy in enemies_list:
         inimigo_x_corrigido = enemy["X"] - game.cam_offset[0]
         inimigo_y_corrigido = enemy["Y"] - game.cam_offset[1]

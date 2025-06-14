@@ -7,7 +7,7 @@ menu_bg_color = (22,158,38)
 def mostrar_menu(game_sys):
     """
     Mostra o menu do jogo
-    Dependências: game_sys["WINDOW"], game_sys["SPRITES"], game_sys["MOUSE"]
+    Dependências: game_sys["WINDOW"],  game_sys["MOUSE"]
     """
 
     # EXTRAÇÃO DAS DEPENDÊNCIAS DA FUNÇÃO

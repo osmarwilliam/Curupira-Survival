@@ -7,6 +7,7 @@ from ui import desenhar_ui
 import player
 import enemies
 import objects
+from waves import auto_wave
 
 cam_offset = [0,0]
 
@@ -61,6 +62,7 @@ def collision_detection():
     """
     Detecta se houve alguma colisão no jogo
     """
+    # TODO: otimizar a detecção de colisão igual o do space invaders
     for object in objects.objects_list:
         if object["TYPE"] == "ARROW":
             for enemy in enemies.enemies_list:
@@ -74,6 +76,22 @@ def collision_detection():
             if object["SPRITE"].collided(player.player["SPRITE"]):
                 player.player["XP"] += object["VALUE"]
                 objects.objects_list.remove(object)
+    
+    for enemy in enemies.enemies_list:
+        verificavel = True
+        if enemy["SPRITE"].x > player.player["SPRITE"].x + player.player["SPRITE"].width:
+            verificavel = False
+        elif enemy["SPRITE"].x + enemy["SPRITE"].width < player.player["SPRITE"].x:
+            verificavel = False
+        elif enemy["SPRITE"].y + enemy["SPRITE"].height < player.player["SPRITE"].y:
+            verificavel = False
+        elif enemy["SPRITE"].y > player.player["SPRITE"].y + player.player["SPRITE"].height:
+            verificavel = False
+
+        if verificavel and pygame.time.get_ticks() - enemy["LAST-ATK"] > enemy["ATK-COOLDOWN"]:
+            if enemy["SPRITE"].collided_perfect(player.player["SPRITE"]):
+                player.player["HP"] -= enemy["ATK"]
+                enemy["LAST-ATK"] = pygame.time.get_ticks()
 
 def run(game_sys):
     global start_time, delta_t
@@ -87,9 +105,6 @@ def run(game_sys):
     
     cam_offset[0] = player.player["SPRITE"].x - WINDOW.width // 2
     cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
-
-    for _ in range(3): 
-        enemies.spawn(random.choice(["JAVALI", "LENHADOR", "CACADOR"]))
 
     while True:
         delta_t = WINDOW.delta_time()
@@ -112,6 +127,7 @@ def run(game_sys):
 
         WINDOW.set_background_color([28,93,42])
         
+        auto_wave()
         collision_detection()
         update_scenario()
         draw_scenario()
@@ -119,7 +135,7 @@ def run(game_sys):
         player.draw() 
 
         if enemies.enemies_list != []:
-            player.auto_attack(WINDOW, enemies.enemies_list)
+            #player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)
