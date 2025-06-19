@@ -48,6 +48,8 @@ def draw_scenario():
 
     for enemy in enemies.enemies_list:
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
+        if enemy["TYPE"] == "JAVALI":
+            enemy["SPRITE"].update()
         enemy["SPRITE"].draw()
 
 def voltar_estado_inicial():
@@ -146,7 +148,7 @@ def run(game_sys):
         player.draw() 
 
         if enemies.enemies_list != []:
-            player.auto_attack(WINDOW, enemies.enemies_list)
+            #player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)

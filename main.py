@@ -3,16 +3,12 @@
 # 0.2 - Arrumar bug da flecha - fazer ela seguir linearmente
 # 0.3 - Remover projéteis que saem muito da tela
 # 1 - PLAYER STATS
-# 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual
+# 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual=
 # TODO: otimizar a detecção de colisão de projéteis igual o do space invaders
-# TODO: Sprites de background
 # TODO: Inimigos não ficar o sprite um em cima do outro
 # BUGS CONHECIDOS:
-# - bug na colisão da flecha com o caçador especificamente
 # - inimigos spawnando na tua frente, eles spawnam em coordenadas fixas, ajuste para coordenadas a partir do 
 # player
-# - Quando atira duas flechas, e uma já mata o inimigo, a outra não sabe o que fazer e fica parada na antiga
-# posição x,y do inimigo
 
 from PPlay.window import *
 from PPlay.sprite import *

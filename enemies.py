@@ -23,7 +23,12 @@ def spawn(type, window): # Realmente tenho que passar window?
         new_enemy["HP"] = 150
         new_enemy["ATK"] = 10
         new_enemy["SPEED"] = 150
-        new_enemy["SPRITE"] = Sprite("assets/javali.png", frames = 2)
+
+        new_enemy["SPRITE"] = Sprite("assets/javali.png", frames = 3)
+        new_enemy["SPRITE"].set_sequence_time(0,3,200)
+        new_enemy["SPRITE"].play()
+        
+        new_enemy["CHARGE_ACTIVATION_DISTANCE"] = 150
         new_enemy["CHARGE_MODE"] = False
         new_enemy["CHARGED"] = False
         new_enemy["CHARGE_SPEED"] = 300
@@ -71,24 +76,30 @@ def javali_ai(enemy, player_x, player_y, delta_t):
     if distancia > 0: # Evita divisão por 0
         dir_x /= distancia
         dir_y /= distancia
+
+    if int(distancia) <= enemy["CHARGE_ACTIVATION_DISTANCE"]:
+        enemy["CHARGE_MODE"] = True
     
     if enemy["CHARGE_MODE"]:
         if not enemy["CHARGED"]:
             enemy["DIR_X"] = dir_x
             enemy["DIR_Y"] = dir_y
-            enemy["X0"] = 0
-            enemy["Y0"] = 0
+            enemy["CHARGE_DISTANCE"] = 0
             enemy["CHARGED"] = True
         else: # TODO: Fazer o charge parar
+            enemy["CHARGE_DISTANCE"] += 1
             enemy["X"] += enemy["DIR_X"] * enemy["CHARGE_SPEED"] * delta_t
             enemy["Y"] += enemy["DIR_Y"] * enemy["CHARGE_SPEED"] * delta_t
+        
+        # Todas as variáveis estão corretamente sendo resetadas aqui?
+        if enemy["CHARGE_DISTANCE"] >= 150:
+            enemy["CHARGE_MODE"] = False
+            enemy["CHARGED"] = False
     else:
         enemy["X"] += dir_x * enemy["SPEED"] * delta_t
         enemy["Y"] += dir_y * enemy["SPEED"] * delta_t
 
     
-    if int(distancia) <= 300:
-        enemy["CHARGE_MODE"] = True
 
 def think(cam_offset, delta_t):
     """
