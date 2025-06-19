@@ -5,11 +5,16 @@ from PPlay.sprite import *
 
 enemies_list = []
 
-def spawn(type):
+def spawn(type, window): # Realmente tenho que passar window?
+    x_left = random.randint(-200, -100)
+    x_right = random.randint(window.width + 100, window.width + 200)
+    y_up = random.randint(-200, -100)
+    y_down = random.randint(window.height + 100, window.height + 200)
+
     new_enemy = {
         "TYPE": type.upper(),
-        "X": random.randint(0, 800), 
-        "Y": random.randint(0, 800),
+        "X": random.choice([x_left, x_right]), 
+        "Y": random.choice([y_up, y_down]),
         "ATK-COOLDOWN": 500, # Por enquanto é o mesmo cooldown para todos os inimigos
         "LAST-ATK": 0
     }
@@ -19,7 +24,9 @@ def spawn(type):
         new_enemy["ATK"] = 10
         new_enemy["SPEED"] = 150
         new_enemy["SPRITE"] = Sprite("assets/javali.png", frames = 2)
+        new_enemy["CHARGE_MODE"] = False
         new_enemy["CHARGED"] = False
+        new_enemy["CHARGE_SPEED"] = 300
     elif new_enemy["TYPE"] == "LENHADOR":
         new_enemy["HP"] = 100
         new_enemy["ATK"] = 5
@@ -30,6 +37,9 @@ def spawn(type):
         new_enemy["SPRITE"] = Sprite("assets/cacador.png")
     
     enemies_list.append(new_enemy)
+
+def reset():
+    enemies_list.clear()
 
 def lenhador_ai(enemy, player_x, player_y, delta_t):
     dir_x = player_x - enemy["X"]
@@ -51,6 +61,8 @@ def javali_ai(enemy, player_x, player_y, delta_t):
         player_x = player["SPRITE"].x + cam_offset[0]
         player_y = player["SPRITE"].y + cam_offset[1]
     """
+    # Se chargou -> movimento linear
+    # movimento linear -> calcula-se uma vez
     dir_x = player_x - enemy["X"]
     dir_y = player_y - enemy["Y"]
 
@@ -59,21 +71,24 @@ def javali_ai(enemy, player_x, player_y, delta_t):
     if distancia > 0: # Evita divisão por 0
         dir_x /= distancia
         dir_y /= distancia
-
-    if int(distancia) <= 300:
-        print("CHARGE")
-        enemy["SPEED"] = 300
-
+    
+    if enemy["CHARGE_MODE"]:
         if not enemy["CHARGED"]:
-            enemy["X"] += dir_x * enemy["SPEED"] * delta_t
-            enemy["Y"] += dir_y * enemy["SPEED"] * delta_t
+            enemy["DIR_X"] = dir_x
+            enemy["DIR_Y"] = dir_y
+            enemy["X0"] = 0
+            enemy["Y0"] = 0
             enemy["CHARGED"] = True
-        else:
-            enemy["X"] += enemy["SPEED"] * delta_t
-            enemy["Y"] += enemy["SPEED"] * delta_t
+        else: # TODO: Fazer o charge parar
+            enemy["X"] += enemy["DIR_X"] * enemy["CHARGE_SPEED"] * delta_t
+            enemy["Y"] += enemy["DIR_Y"] * enemy["CHARGE_SPEED"] * delta_t
     else:
         enemy["X"] += dir_x * enemy["SPEED"] * delta_t
         enemy["Y"] += dir_y * enemy["SPEED"] * delta_t
+
+    
+    if int(distancia) <= 300:
+        enemy["CHARGE_MODE"] = True
 
 def think(cam_offset, delta_t):
     """

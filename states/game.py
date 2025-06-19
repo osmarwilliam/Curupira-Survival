@@ -4,10 +4,12 @@ from PPlay.collision import Collision
 import random
 
 from ui import desenhar_ui
+import utils
 import player
 import enemies
 import objects
-from waves import auto_wave
+import waves
+
 
 cam_offset = [0,0]
 
@@ -29,24 +31,14 @@ def update_scenario():
 
     for object in objects.objects_list:
         if object["TYPE"] == "ARROW":
-            dir_x = object["TARGET_X"] - object["X"]
-            dir_y = object["TARGET_Y"] - object["Y"]
-
-            distancia = (dir_x**2 + dir_y**2)**0.5 # Teorema de Pitágoras
-
-            if distancia > 0: # Evita divisão por 0
-                dir_x /= distancia
-                dir_y /= distancia
-
-            object["X"] += dir_x * object["SPEED"] * delta_t
-            object["Y"] += dir_y * object["SPEED"] * delta_t
+            object["X"] += object["DIR_X"] * object["SPEED"] * delta_t
+            object["Y"] += object["DIR_Y"] * object["SPEED"] * delta_t
 
 def draw_scenario(): 
     """ 
     Desenha os sprites nas coordenadas corrigidas com o offset
     Obs.: Coordenada corrigida com offset -> A coordenada de onde o objeto está na tela corrigido com o offset da câmera
     """
-
     for object in objects.objects_list:
         object["SPRITE"].set_position(object["X"] - cam_offset[0], object["Y"] - cam_offset[1])
         object["SPRITE"].draw()
@@ -57,6 +49,17 @@ def draw_scenario():
     for enemy in enemies.enemies_list:
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
         enemy["SPRITE"].draw()
+
+def voltar_estado_inicial():
+    global start_time, delta_t
+    start_time = None
+    delta_t = None
+
+    # Volta os dados do jogo p/a o estado inicial  
+    player.reset()
+    objects.reset()
+    enemies.reset()
+    waves.reset()
 
 def collision_detection():
     """
@@ -106,6 +109,9 @@ def run(game_sys):
     cam_offset[0] = player.player["SPRITE"].x - WINDOW.width // 2
     cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
     
+    #utils.set_background(WINDOW, cam_offset)
+    
+
     while True:
         delta_t = WINDOW.delta_time()
 
@@ -125,13 +131,18 @@ def run(game_sys):
             cam_offset[0] += player.VELOCIDADE * delta_t
             player.change_side("RIGHT")
 
-        WINDOW.set_background_color([28,93,42])
-        
-        #auto_wave()
+        utils.draw_background(WINDOW, cam_offset)
+        waves.auto_wave(WINDOW)
         collision_detection()
         update_scenario()
         draw_scenario()
 
+        if player.player["HP"] <= 0:
+            voltar_estado_inicial()
+            game_sys["STATE_SWITCHER"] = "GAME_OVER"
+            return 0
+
+        player.update_info()
         player.draw() 
 
         if enemies.enemies_list != []:
@@ -139,4 +150,7 @@ def run(game_sys):
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)
+        utils.draw_version(WINDOW)
+        #WINDOW.clear()
         WINDOW.update()
+        

@@ -1,10 +1,16 @@
 # TODO LIST:
-# 1 - modificar no 'ui' o xp_max conforme o nível do jogador, talvez mudar para o módulo do player
-# 2 - PLAYER STATS
-# 3 - Remover projéteis que saem muito da tela
+# IMPLEMENTAR ITENS
+# 0.2 - Arrumar bug da flecha - fazer ela seguir linearmente
+# 0.3 - Remover projéteis que saem muito da tela
+# 1 - PLAYER STATS
+# 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual
 # TODO: otimizar a detecção de colisão de projéteis igual o do space invaders
+# TODO: Sprites de background
+# TODO: Inimigos não ficar o sprite um em cima do outro
 # BUGS CONHECIDOS:
 # - bug na colisão da flecha com o caçador especificamente
+# - inimigos spawnando na tua frente, eles spawnam em coordenadas fixas, ajuste para coordenadas a partir do 
+# player
 # - Quando atira duas flechas, e uma já mata o inimigo, a outra não sabe o que fazer e fica parada na antiga
 # posição x,y do inimigo
 
@@ -13,6 +19,7 @@ from PPlay.sprite import *
 
 import states.game as game
 from states.menu import mostrar_menu
+from states.game_over import game_over
 
 # game_sys é o dicionário que contém as principais variáveis do programa, como Window, Keyboard, Mouse e Sprites.
 game_sys = {}
@@ -36,3 +43,5 @@ while True:
         game.run(game_sys)
     elif game_sys["STATE_SWITCHER"] == "MENU":
         mostrar_menu(game_sys)
+    elif game_sys["STATE_SWITCHER"] == "GAME_OVER":
+        game_over(game_sys)

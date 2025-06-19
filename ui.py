@@ -1,4 +1,5 @@
 import pygame
+from PPlay.gameimage import *
 from PPlay.sprite import *
 
 import states.game as game
@@ -52,9 +53,8 @@ def desenhar_barra_xp(janela):
     barra_xp_width = janela.width
     barra_xp_height = 50
 
-    # TODO: modificar xp_max conforme o nível do jogador
-    xp_max = 100
-    xp_ratio = min(player["XP"] / xp_max, 1)
+    #print("PLAYER XP: " + str(player["XP"]))
+    xp_ratio = min(player["XP"] / player["XP_MAX"], 1)
     xp_fill_width = int(barra_xp_width * xp_ratio)
 
     # DESENHA A BARRA DE XP VAZIA
@@ -80,6 +80,23 @@ def desenhar_barra_vida(janela):
                                                 player["SPRITE"].y + player["SPRITE"].height + 5,
                                                 barra_preenchida, 20))
 
+def mostrar_inimigos_mortos(janela):
+    caveira = GameImage("assets/ui_caveira.png")
+    caveira.set_position(janela.width - caveira.width -  10, y_ui)
+    caveira.draw()
+
+    text = pygame.font.SysFont('Tahoma', 25).render(str(player["ENEMIES_KILLED"]), True, (255,255,255))
+    text_rect = text.get_rect()
+    
+    janela.draw_text(str(player["ENEMIES_KILLED"]), 
+                     caveira.x - text_rect.width - 10, 
+                     caveira.y + 2, 
+                     size = 25, 
+                     color = WHITE, 
+                     font_name = FONTE, 
+                     bold = False, 
+                     italic = False)
+
 def desenhar_ui(janela, player):
     barra_xp_height = 50
     
@@ -89,12 +106,7 @@ def desenhar_ui(janela, player):
     janela.draw_text( "LVL " + str(player["LEVEL"]), janela.width - 70, barra_xp_height/4 , size = 25, color = WHITE, font_name = FONTE, bold = False, italic = False)
 
     # MOSTRA A QTD DE INIMIGOS MORTOS
-    # Código temporário, depois aperfeiçoar
-    caveira = Sprite("assets/ui_caveira.png")
-    caveira.set_position(janela.width - caveira.width -  10, y_ui)
-    caveira.draw()
-    # Depois ver como colocar a posição dos números corretamente, sem ficar entrando dentro do desenho da caveira quando o número fica grande demais
-    janela.draw_text(str(player["ENEMIES_KILLED"]), caveira.x - 20, caveira.y + 2, size = 25, color = WHITE, font_name = FONTE, bold = False, italic = False)
+    mostrar_inimigos_mortos(janela)
 
     mostrar_cronometro(janela)
     mostrar_itens(janela)

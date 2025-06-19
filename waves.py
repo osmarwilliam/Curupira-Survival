@@ -11,10 +11,10 @@ import random
 import pygame
 import enemies
 
-WAVE_COOLDOWN = 8000 # ~~ 8 seg
+WAVE_COOLDOWN = 4000 # ~~ 4 seg
 last_wave = 0
 
-def auto_wave():
+def auto_wave(window): # Realmente tem que passar window?
     global WAVE_COOLDOWN, last_wave
 
     if pygame.time.get_ticks() - last_wave > WAVE_COOLDOWN:
@@ -24,7 +24,11 @@ def auto_wave():
         for _ in range(n):
             # Depois fazer O Javali só spawnar a partir de x minutos, o mesmo para o caçador, para a dificuldade
             # ir aumentando conforme o tempo
-            #enemies.spawn(random.choice(["JAVALI", "LENHADOR", "CACADOR"]))
-            enemies.spawn("LENHADOR")
+            #enemies.spawn(random.choice(["JAVALI", "LENHADOR"]), window)
+            enemies.spawn("LENHADOR", window)
 
         last_wave = pygame.time.get_ticks()
+
+def reset():
+    global last_wave
+    last_wave = 0
