@@ -15,6 +15,7 @@
 # TODO: Colisão entre sprites tá muito bugada, parece até que o collided perfect não tá funcionando
 # TODO: FAZER ANIMAÇÃO DO CAÇADOR AJOELHANDO E MIRANDO PARA ATIRAR
 # TODO: FAZER ANIMAÇÃO DE CHARGE DO JAVALI
+# TODO: Ajustar a posição dos botões no menu de configurações
 
 from PPlay.window import *
 from PPlay.sprite import *
@@ -22,6 +23,7 @@ from PPlay.sprite import *
 import states.game as game
 from states.menu import mostrar_menu
 from states.game_over import game_over
+from states.config_menu import mostrar_configs
 
 # game_sys é o dicionário que contém as principais variáveis do programa, como Window, Keyboard, Mouse e Sprites.
 game_sys = {}
@@ -43,7 +45,9 @@ init()
 while True:
     if game_sys["STATE_SWITCHER"] == "GAME":
         game.run(game_sys)
-    elif game_sys["STATE_SWITCHER"] == "MENU":
-        mostrar_menu(game_sys)
     elif game_sys["STATE_SWITCHER"] == "GAME_OVER":
         game_over(game_sys)
+    elif game_sys["STATE_SWITCHER"] == "MENU":
+        mostrar_menu(game_sys)
+    elif game_sys["STATE_SWITCHER"] == "CONFIG":
+        mostrar_configs(game_sys)

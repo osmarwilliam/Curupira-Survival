@@ -1,5 +1,9 @@
-from PPlay.gameimage import *
+import pygame
 import objects,player,enemies,waves
+from PPlay.gameimage import *
+
+DELAY_ENTRE_CLIQUES = 300
+ultimo_clique = 0
 
 def draw_version(window):
     game_version = "ALPHA VERSION"
@@ -14,7 +18,15 @@ def draw_version(window):
                      italic = False)
 
 def clicked(mouse, button):
-    return mouse.is_button_pressed(1) and mouse.is_over_object(button)
+    global ultimo_clique, DELAY_ENTRE_CLIQUES
+
+    tempo_atual = pygame.time.get_ticks()
+    clicou = mouse.is_button_pressed(1) and mouse.is_over_object(button) and tempo_atual - ultimo_clique > DELAY_ENTRE_CLIQUES
+
+    if clicou: ultimo_clique = tempo_atual
+    return clicou
+
+
 
 def draw_background(window, cam_offset):
     """
@@ -35,7 +47,7 @@ def draw_background(window, cam_offset):
         x = 0
     """
     # TODO: ENTENDER PQ ISSO AQ FUNCIONA
-    tile = GameImage("assets/grass_test.png")
+    tile = GameImage("assets/grass.png")
     tile_w, tile_h = tile.width, tile.height
 
     # Calcula o início do grid para cobrir toda a tela

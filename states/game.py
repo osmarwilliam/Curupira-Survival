@@ -17,6 +17,9 @@ cam_offset = [0,0]
 start_time = None  
 delta_t = None
 
+# 0 -> Desativado; 1 -> Ativado
+manual_mode = 0
+
 # Efeitos sonoros
 hitSound = Sound("assets/audio/hit.wav")
 xpSound = Sound("assets/audio/xp.wav")
@@ -95,19 +98,6 @@ def collision_detection():
                 hitSound.play()
                 enemy["LAST-ATK"] = pygame.time.get_ticks()
 
-def player_input(KEYBOARD):
-    if KEYBOARD.key_pressed("W"):
-        cam_offset[1] -= player.VELOCIDADE * delta_t
-    elif KEYBOARD.key_pressed("S"):
-        cam_offset[1] += player.VELOCIDADE * delta_t
-
-    if KEYBOARD.key_pressed("A"):
-        cam_offset[0] -= player.VELOCIDADE * delta_t
-        player.change_side("LEFT")
-    elif KEYBOARD.key_pressed("D"):
-        cam_offset[0] += player.VELOCIDADE * delta_t
-        player.change_side("RIGHT")
-
 def run(game_sys):
     global start_time, delta_t
     start_time = pygame.time.get_ticks()
@@ -115,6 +105,7 @@ def run(game_sys):
     # P/a o código ficar menos verboso e evitar erros de digitação
     WINDOW = game_sys["WINDOW"]
     KEYBOARD = game_sys["KEYBOARD"]
+    MOUSE = game_sys["MOUSE"]
 
     player.spawn(WINDOW)
     
@@ -133,7 +124,7 @@ def run(game_sys):
             game_sys["STATE_SWITCHER"] = "MENU"
             return 0
 
-        player_input(KEYBOARD)
+        player.input(KEYBOARD, MOUSE)
 
         utils.draw_background(WINDOW, cam_offset)
 
@@ -153,7 +144,8 @@ def run(game_sys):
         player.draw() 
 
         if enemies.enemies_list != []:
-            player.auto_attack(WINDOW, enemies.enemies_list)
+            global manual_mode
+            if not manual_mode: player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)

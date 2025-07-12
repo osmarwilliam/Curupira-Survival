@@ -1,6 +1,7 @@
 from math import sqrt
 
 from PPlay.sprite import *
+from PPlay.mouse import *
 
 import pygame
 
@@ -32,6 +33,36 @@ def spawn(janela):
         (janela.height - player["SPRITE"].height)//2
     )
 
+def input(KEYBOARD, MOUSE):
+    global VELOCIDADE, last_player_attack
+    delta_t = game.delta_t
+    cam_offset = game.cam_offset
+
+    if KEYBOARD.key_pressed("W"):
+        cam_offset[1] -= VELOCIDADE * delta_t
+    elif KEYBOARD.key_pressed("S"):
+        cam_offset[1] += VELOCIDADE * delta_t
+
+    if KEYBOARD.key_pressed("A"):
+        cam_offset[0] -= VELOCIDADE * delta_t
+        change_side("LEFT")
+    elif KEYBOARD.key_pressed("D"):
+        cam_offset[0] += VELOCIDADE * delta_t
+        change_side("RIGHT")
+
+    if game.manual_mode and MOUSE.is_button_pressed(1) and MOUSE.is_on_screen() and player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
+        alvo = MOUSE.get_position()
+        player_x = player["SPRITE"].x
+        player_y = player["SPRITE"].y
+        
+        objects.arrow_spawn(player_x + game.cam_offset[0], 
+            player_y + game.cam_offset[1], 
+            alvo[0] + game.cam_offset[0], 
+            alvo[1] + game.cam_offset[1]
+        )
+
+        last_player_attack = pygame.time.get_ticks()
+
 def update_info():
     # Checa se já pode subir de level
     if player["XP"] >= player["XP_MAX"]:
@@ -62,7 +93,6 @@ def auto_attack(janela, enemies_list):
     player_y = player["SPRITE"].y
     centro_player = [player_x + player["SPRITE"].width/2, player_y + player["SPRITE"].height/2]
     
-    inimigo_mais_proximo = None
     centro_inimigo_x = None
     centro_inimigo_y = None
     menor_distancia = float('inf')
@@ -80,7 +110,6 @@ def auto_attack(janela, enemies_list):
 
                 if distancia < menor_distancia:
                     menor_distancia = distancia
-                    inimigo_mais_proximo = enemy
                     centro_inimigo_x = centro_inimigo[0]
                     centro_inimigo_y = centro_inimigo[1]
 
