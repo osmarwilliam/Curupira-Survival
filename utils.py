@@ -1,5 +1,5 @@
 import pygame
-import objects,player,enemies,waves
+import globals,objects,player,enemies,waves
 from PPlay.gameimage import *
 
 DELAY_ENTRE_CLIQUES = 300
@@ -26,7 +26,27 @@ def clicked(mouse, button):
     if clicou: ultimo_clique = tempo_atual
     return clicou
 
+def draw_sprite(object):
+    if (object["FACING_RIGHT"]):
+        object["SPRITE"].draw()
+    else:
+        sprite_width = object["SPRITE"].width
+        sprite_height = object["SPRITE"].height
+        image = object["SPRITE"].image
 
+        # Obs.: Fiz uma mistureba aqui com o código do pplay com o pygame.transform pra conseguir virar o sprite
+        # Clips the frame (rect on the image)
+        clip_rect = pygame.Rect(object["SPRITE"].get_curr_frame()*sprite_width,
+                                0,
+                                sprite_width,
+                                sprite_height
+                                )
+
+        # Updates the pygame rect based on new positions values
+        object["SPRITE"].rect = pygame.Rect(object["SPRITE"].x, object["SPRITE"].y, sprite_width, sprite_height)
+
+        flipped_surface = pygame.transform.flip(image, True, False)
+        globals.WINDOW.get_screen().blit(flipped_surface, object["SPRITE"].rect, area=clip_rect)
 
 def draw_background(window, cam_offset):
     """

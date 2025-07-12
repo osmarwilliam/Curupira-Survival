@@ -142,7 +142,7 @@ def run():
             return 0
 
         player.update_info()
-        player.draw() 
+        utils.draw_sprite(player.player) 
 
         if enemies.enemies_list != []:
             if not globals.manual_mode: player.auto_attack(enemies.enemies_list)

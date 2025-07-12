@@ -34,6 +34,10 @@ def spawn():
         (WINDOW.height - player["SPRITE"].height)//2
     )
 
+    # 1: Olhando p/a direita
+    # 0: Olhando p/a esquerda
+    player["FACING_RIGHT"] = 1
+
 def input(KEYBOARD, MOUSE):
     global VELOCIDADE, last_player_attack
     delta_t = game.delta_t
@@ -49,11 +53,11 @@ def input(KEYBOARD, MOUSE):
     if KEYBOARD.key_pressed("A"):
         cam_offset[0] -= VELOCIDADE * delta_t
         player["SPRITE"].update()
-        #change_side("LEFT")
+        player["FACING_RIGHT"] = 0
     elif KEYBOARD.key_pressed("D"):
         cam_offset[0] += VELOCIDADE * delta_t
         player["SPRITE"].update()
-        #change_side("RIGHT")
+        player["FACING_RIGHT"] = 1
 
     if globals.manual_mode and MOUSE.is_button_pressed(1) and MOUSE.is_on_screen() and player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
         alvo = MOUSE.get_position()
@@ -79,15 +83,6 @@ def reset():
     global last_player_attack
     last_player_attack = 0
     player.clear()
-
-def draw():
-    player["SPRITE"].draw()
-
-def change_side(side):
-    if side == "LEFT":
-        player["SPRITE"].set_curr_frame(1)
-    elif side == "RIGHT":
-        player["SPRITE"].set_curr_frame(0)
 
 debug_mode = 0
 
