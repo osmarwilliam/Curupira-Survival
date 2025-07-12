@@ -142,6 +142,7 @@ def run(game_sys):
         player_input(KEYBOARD)
 
         utils.draw_background(WINDOW, cam_offset)
+        
         waves.auto_wave(WINDOW)
         collision_detection()
         update_scenario()
