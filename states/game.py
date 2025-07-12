@@ -1,5 +1,6 @@
 from PPlay.sprite import *
 from PPlay.collision import Collision
+from PPlay.sound import *
 
 import random
 
@@ -15,6 +16,10 @@ cam_offset = [0,0]
 
 start_time = None  
 delta_t = None
+
+# Efeitos sonoros
+hitSound = Sound("assets/audio/hit.wav")
+xpSound = Sound("assets/audio/xp.wav")
 
 def update_scenario(): 
     """
@@ -62,6 +67,7 @@ def collision_detection():
     """
     Detecta se houve alguma colisão no jogo
     """
+    global hitSound
     # TODO: otimizar a detecção de colisão igual o do space invaders
     for object in objects.objects_list:
         if object["TYPE"] == "ARROW":
@@ -75,6 +81,7 @@ def collision_detection():
         elif object["TYPE"] == "XP":
             if object["SPRITE"].collided(player.player["SPRITE"]):
                 player.player["XP"] += object["VALUE"]
+                xpSound.play()
                 objects.objects_list.remove(object)
     
     for enemy in enemies.enemies_list:
@@ -91,7 +98,21 @@ def collision_detection():
         if verificavel and pygame.time.get_ticks() - enemy["LAST-ATK"] > enemy["ATK-COOLDOWN"]:
             if enemy["SPRITE"].collided_perfect(player.player["SPRITE"]):
                 player.player["HP"] -= enemy["ATK"]
+                hitSound.play()
                 enemy["LAST-ATK"] = pygame.time.get_ticks()
+
+def player_input(KEYBOARD):
+    if KEYBOARD.key_pressed("W"):
+        cam_offset[1] -= player.VELOCIDADE * delta_t
+    elif KEYBOARD.key_pressed("S"):
+        cam_offset[1] += player.VELOCIDADE * delta_t
+
+    if KEYBOARD.key_pressed("A"):
+        cam_offset[0] -= player.VELOCIDADE * delta_t
+        player.change_side("LEFT")
+    elif KEYBOARD.key_pressed("D"):
+        cam_offset[0] += player.VELOCIDADE * delta_t
+        player.change_side("RIGHT")
 
 def run(game_sys):
     global start_time, delta_t
@@ -106,27 +127,19 @@ def run(game_sys):
     cam_offset[0] = player.player["SPRITE"].x - WINDOW.width // 2
     cam_offset[1] = player.player["SPRITE"].y - WINDOW.height // 2
     
-    #utils.set_background(WINDOW, cam_offset)
-    
+    backgroundMusic = Sound("assets/audio/bg1_the-gensokyo-the-gods-loved.mp3")
+    backgroundMusic.loop = True
+    backgroundMusic.play()
 
     while True:
         delta_t = WINDOW.delta_time()
 
+        # TODO: FAZER A MÚSICA DE FUNDO PAUSAR QUANDO APERTAR O BOTÃO DO MENU
         if KEYBOARD.key_pressed("ESC"):
             game_sys["STATE_SWITCHER"] = "MENU"
             return 0
 
-        if KEYBOARD.key_pressed("W"):
-            cam_offset[1] -= player.VELOCIDADE * delta_t
-        elif KEYBOARD.key_pressed("S"):
-            cam_offset[1] += player.VELOCIDADE * delta_t
-
-        if KEYBOARD.key_pressed("A"):
-            cam_offset[0] -= player.VELOCIDADE * delta_t
-            player.change_side("LEFT")
-        elif KEYBOARD.key_pressed("D"):
-            cam_offset[0] += player.VELOCIDADE * delta_t
-            player.change_side("RIGHT")
+        player_input(KEYBOARD)
 
         utils.draw_background(WINDOW, cam_offset)
         waves.auto_wave(WINDOW)
@@ -135,6 +148,8 @@ def run(game_sys):
         draw_scenario()
 
         if player.player["HP"] <= 0:
+            backgroundMusic.stop()
+            Sound("assets/audio/game-over.wav").play()
             utils.reset_game()
             game_sys["STATE_SWITCHER"] = "GAME_OVER"
             return 0
@@ -143,11 +158,11 @@ def run(game_sys):
         player.draw() 
 
         if enemies.enemies_list != []:
-            #player.auto_attack(WINDOW, enemies.enemies_list)
+            player.auto_attack(WINDOW, enemies.enemies_list)
             enemies.think(cam_offset, delta_t)
 
         desenhar_ui(WINDOW, player.player)
-        utils.draw_version(WINDOW)
+        #utils.draw_version(WINDOW)
         #WINDOW.clear()
         WINDOW.update()
         
