@@ -42,7 +42,11 @@ def spawn(type):
         new_enemy["SPRITE"].set_total_duration(1000)
     elif new_enemy["TYPE"] == "CACADOR":
         new_enemy["HP"] = 100
-        new_enemy["SPRITE"] = Sprite("assets/cacador.png")
+        new_enemy["ATK"] = 15
+        new_enemy["SPEED"] = 50
+
+        new_enemy["SPRITE"] = Sprite("assets/cacador.png", frames = 3)
+        new_enemy["SPRITE"].set_total_duration(1000)
     
     enemies_list.append(new_enemy)
 
@@ -112,5 +116,5 @@ def think(cam_offset, delta_t):
     for enemy in enemies_list:
         if enemy["TYPE"] == "JAVALI":
             javali_ai(enemy, player_x, player_y, delta_t)
-        if enemy["TYPE"] == "LENHADOR":
+        if enemy["TYPE"] == "LENHADOR" or enemy["TYPE"] == "CACADOR":
             lenhador_ai(enemy, player_x, player_y, delta_t)

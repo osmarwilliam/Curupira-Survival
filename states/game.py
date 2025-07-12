@@ -53,15 +53,8 @@ def draw_scenario():
 
     for enemy in enemies.enemies_list: # TODO: Ajeitar inversão do sprite
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
-        #enemy["SPRITE_L"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1]) 
-
-        if enemy["TYPE"] == "LENHADOR":
-            #if enemy["SPRITE_R"].x > player.player["SPRITE"].x:
-            #    enemy["SPRITE_L"].update()
-            #    enemy["SPRITE_L"].draw()
-            #else:
-            enemy["SPRITE"].update()
-            enemy["SPRITE"].draw()
+        enemy["SPRITE"].update()
+        enemy["SPRITE"].draw()
 
 def collision_detection():
     """
@@ -69,6 +62,7 @@ def collision_detection():
     """
     global hitSound
     # TODO: otimizar a detecção de colisão igual o do space invaders
+    # TODO: Colisão entre sprites tá muito bugada, parece até que o collided perfect não tá funcionando
     for object in objects.objects_list:
         if object["TYPE"] == "ARROW":
             for enemy in enemies.enemies_list:
@@ -142,7 +136,7 @@ def run(game_sys):
         player_input(KEYBOARD)
 
         utils.draw_background(WINDOW, cam_offset)
-        
+
         waves.auto_wave(WINDOW)
         collision_detection()
         update_scenario()
