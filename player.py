@@ -8,7 +8,7 @@ import states.game as game
 import objects
 
 player = {}
-VELOCIDADE = 500
+VELOCIDADE = 250
 last_player_attack = 0
 
 def spawn(janela):

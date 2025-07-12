@@ -5,7 +5,7 @@
 # 1 - PLAYER STATS
 # 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual=
 # TODO: otimizar a detecção de colisão de projéteis igual o do space invaders
-# TODO: Inimigos não ficar o sprite um em cima do outro
+# TODO: Implementar colisão para inimigos não ficar o sprite um em cima do outro
 # BUGS CONHECIDOS:
 # - inimigos spawnando na tua frente, eles spawnam em coordenadas fixas, ajuste para coordenadas a partir do 
 # player

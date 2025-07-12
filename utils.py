@@ -35,7 +35,7 @@ def draw_background(window, cam_offset):
         x = 0
     """
     # TODO: ENTENDER PQ ISSO AQ FUNCIONA
-    tile = GameImage("assets/grass.png")
+    tile = GameImage("assets/grass_test.png")
     tile_w, tile_h = tile.width, tile.height
 
     # Calcula o início do grid para cobrir toda a tela
