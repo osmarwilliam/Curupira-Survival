@@ -2,8 +2,6 @@ from PPlay.sprite import *
 from PPlay.collision import Collision
 from PPlay.sound import *
 
-import random
-
 from ui import desenhar_ui
 import utils
 import player
@@ -59,15 +57,22 @@ def draw_scenario():
         enemy["SPRITE"].update()
         enemy["SPRITE"].draw()
 
-def collision_detection():
+def collision_detection(window): # Realmente é necessário passar esse window?
     """
     Detecta se houve alguma colisão no jogo
     """
     global hitSound
+
+    # P/a ficar menos verboso
+    player_sprite = player.player["SPRITE"]
     # TODO: otimizar a detecção de colisão igual o do space invaders
     # TODO: Colisão entre sprites tá muito bugada, parece até que o collided perfect não tá funcionando
     for object in objects.objects_list:
         if object["TYPE"] == "ARROW":
+            X_MIN, X_MAX = player_sprite.x - window.width, player_sprite.x + window.width
+            Y_MIN, Y_MAX = player_sprite.y - window.height, player_sprite.y + window.height
+            
+            # Primeiro verifica se atingiu algum inimigo
             for enemy in enemies.enemies_list:
                 if object["SPRITE"].collided_perfect(enemy["SPRITE"]):
                     objects.drop_xp(enemy)
@@ -75,25 +80,30 @@ def collision_detection():
                     enemies.enemies_list.remove(enemy)
                     player.player["ENEMIES_KILLED"] += 1
                     break
+
+            # Verifica se saiu dos limites da "tela". Não preciso me preocupar com o tamanho exato do sprite, já que essa remoção não será vista pelo jogador
+            if not(X_MIN <= object["SPRITE"].x <= X_MAX and Y_MIN <= object["SPRITE"].y <= Y_MAX): 
+                objects.objects_list.remove(object)
+
         elif object["TYPE"] == "XP":
-            if object["SPRITE"].collided(player.player["SPRITE"]):
+            if object["SPRITE"].collided(player_sprite):
                 player.player["XP"] += object["VALUE"]
                 xpSound.play()
                 objects.objects_list.remove(object)
     
     for enemy in enemies.enemies_list:
         verificavel = True
-        if enemy["SPRITE"].x > player.player["SPRITE"].x + player.player["SPRITE"].width:
+        if enemy["SPRITE"].x > player_sprite.x + player_sprite.width:
             verificavel = False
-        elif enemy["SPRITE"].x + enemy["SPRITE"].width < player.player["SPRITE"].x:
+        elif enemy["SPRITE"].x + enemy["SPRITE"].width < player_sprite.x:
             verificavel = False
-        elif enemy["SPRITE"].y + enemy["SPRITE"].height < player.player["SPRITE"].y:
+        elif enemy["SPRITE"].y + enemy["SPRITE"].height < player_sprite.y:
             verificavel = False
-        elif enemy["SPRITE"].y > player.player["SPRITE"].y + player.player["SPRITE"].height:
+        elif enemy["SPRITE"].y > player_sprite.y + player_sprite.height:
             verificavel = False
 
         if verificavel and pygame.time.get_ticks() - enemy["LAST-ATK"] > enemy["ATK-COOLDOWN"]:
-            if enemy["SPRITE"].collided_perfect(player.player["SPRITE"]):
+            if enemy["SPRITE"].collided_perfect(player_sprite):
                 player.player["HP"] -= enemy["ATK"]
                 hitSound.play()
                 enemy["LAST-ATK"] = pygame.time.get_ticks()
@@ -129,7 +139,7 @@ def run(game_sys):
         utils.draw_background(WINDOW, cam_offset)
 
         waves.auto_wave(WINDOW)
-        collision_detection()
+        collision_detection(WINDOW)
         update_scenario()
         draw_scenario()
 
