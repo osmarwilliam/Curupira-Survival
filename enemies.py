@@ -17,6 +17,7 @@ def spawn(type):
         "TYPE": type.upper(),
         "X": random.choice([x_left, x_right]), 
         "Y": random.choice([y_up, y_down]),
+        "FACING_RIGHT": 1,
         "ATK-COOLDOWN": 500, # Por enquanto é o mesmo cooldown para todos os inimigos
         "LAST-ATK": 0
     }

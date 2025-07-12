@@ -48,11 +48,17 @@ def draw_scenario():
     for enemy in enemies.enemies_list: # TODO: Ajeitar inversão do sprite
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
         enemy["SPRITE"].update()
-        enemy["SPRITE"].draw()
 
-def collision_detection(): # Realmente é necessário passar esse window?
+        # Depois ajeitar esse cálculo aqui
+        if enemy["SPRITE"].x > player.player["SPRITE"].x:
+            enemy["FACING_RIGHT"] = 0
+        else:
+            enemy["FACING_RIGHT"] = 1
+
+        utils.draw_sprite(enemy)
+
+def collision_detection():
     WINDOW = globals.WINDOW
-    global hitSound
 
     # P/a ficar menos verboso
     player_sprite = player.player["SPRITE"]
