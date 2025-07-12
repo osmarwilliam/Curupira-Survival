@@ -14,7 +14,7 @@ import enemies
 WAVE_COOLDOWN = 4000 # ~~ 4 seg
 last_wave = 0
 
-def auto_wave(window): # Realmente tem que passar window?
+def auto_wave():
     global WAVE_COOLDOWN, last_wave
 
     if pygame.time.get_ticks() - last_wave > WAVE_COOLDOWN:

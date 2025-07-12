@@ -1,13 +1,14 @@
+import globals
 from utils import clicked
-
 from PPlay.sprite import *
 
-menu_bg_color = (22,158,38)
+MENU_BG_COLOR = (22,158,38)
 
-def mostrar_menu(game_sys):
-    WINDOW = game_sys["WINDOW"]
+def mostrar_menu():
+    WINDOW = globals.WINDOW
+    MOUSE = globals.MOUSE
 
-    WINDOW.set_background_color(menu_bg_color)
+    WINDOW.set_background_color(MENU_BG_COLOR)
 
     BUTTON_WIDTH = Sprite("assets/botao-jogar.png").width
     BUTTON_HEIGHT = Sprite("assets/botao-jogar.png").height
@@ -26,11 +27,9 @@ def mostrar_menu(game_sys):
     exit_button.set_position( (WINDOW.width - BUTTON_WIDTH)/2, MEIO + BUTTON_HEIGHT + PADDING)
     exit_button.draw()
         
-    WINDOW.update()
-
-    if clicked(game_sys["MOUSE"], play_button):
-        game_sys["STATE_SWITCHER"] = "GAME"
-    elif clicked(game_sys["MOUSE"], config_button):
-        game_sys["STATE_SWITCHER"] = "CONFIG"
-    elif clicked(game_sys["MOUSE"], exit_button):
+    if clicked(MOUSE, play_button):
+        globals.current_state = "GAME"
+    elif clicked(MOUSE, config_button):
+        globals.current_state = "CONFIG"
+    elif clicked(MOUSE, exit_button):
         WINDOW.close()

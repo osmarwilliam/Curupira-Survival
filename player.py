@@ -4,7 +4,7 @@ from PPlay.sprite import *
 from PPlay.mouse import *
 
 import pygame
-
+import globals
 import states.game as game
 import objects
 
@@ -12,7 +12,9 @@ player = {}
 VELOCIDADE = 250
 last_player_attack = 0
 
-def spawn(janela):
+def spawn():
+    WINDOW = globals.WINDOW
+
     player["HP"] = 100
     player["ATK"] = 1 # Attack
     player["ATK-COOLDOWN"] = 2500
@@ -28,8 +30,8 @@ def spawn(janela):
     player["SPRITE"] = Sprite("assets/curupira.png", frames = 3)
     player["SPRITE"].set_total_duration(700)    
     player["SPRITE"].set_position(
-        (janela.width-player["SPRITE"].width)//2, 
-        (janela.height - player["SPRITE"].height)//2
+        (WINDOW.width-player["SPRITE"].width)//2, 
+        (WINDOW.height - player["SPRITE"].height)//2
     )
 
 def input(KEYBOARD, MOUSE):
@@ -53,7 +55,7 @@ def input(KEYBOARD, MOUSE):
         player["SPRITE"].update()
         #change_side("RIGHT")
 
-    if game.manual_mode and MOUSE.is_button_pressed(1) and MOUSE.is_on_screen() and player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
+    if globals.manual_mode and MOUSE.is_button_pressed(1) and MOUSE.is_on_screen() and player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
         alvo = MOUSE.get_position()
         player_x = player["SPRITE"].x
         player_y = player["SPRITE"].y
@@ -89,7 +91,7 @@ def change_side(side):
 
 debug_mode = 0
 
-def auto_attack(janela, enemies_list):
+def auto_attack(enemies_list):
     global last_player_attack
 
     player_x = player["SPRITE"].x
@@ -124,6 +126,7 @@ def auto_attack(janela, enemies_list):
             last_player_attack = pygame.time.get_ticks()
 
     if debug_mode:
-        pygame.draw.rect(janela.get_screen(), (0,255,0), (centro_player[0]-7, centro_player[1]-7, 14, 14))
+        WINDOW = globals.WINDOW
+        pygame.draw.rect(WINDOW.get_screen(), (0,255,0), (centro_player[0]-7, centro_player[1]-7, 14, 14))
         if centro_inimigo_x != None:
-            pygame.draw.rect(janela.get_screen(), (0,255,255), (centro_inimigo_x-7, centro_inimigo_y-7, 14, 14))
+            pygame.draw.rect(WINDOW.get_screen(), (0,255,255), (centro_inimigo_x-7, centro_inimigo_y-7, 14, 14))

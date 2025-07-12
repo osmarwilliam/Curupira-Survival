@@ -18,36 +18,39 @@
 # TODO: Fazer animação idle do curupira
 
 from PPlay.window import *
-from PPlay.sprite import *
+from PPlay.sound import *
 
+import globals
 import states.game as game
 from states.menu import mostrar_menu
 from states.game_over import game_over
 from states.config_menu import mostrar_configs
 
-# game_sys é o dicionário que contém as principais variáveis do programa, como Window, Keyboard, Mouse e Sprites.
-game_sys = {}
-
 def init():
     """
-    Inicializa as principais variáveis do programa e as armazena no game_sys
+    Inicializa algumas variáveis globais do programa
     """
-    game_sys["WINDOW"] = Window(1000,800)
-    game_sys["WINDOW"].set_title("Curupira Survival")
+    globals.WINDOW = Window(1000,800)
+    globals.WINDOW.set_title("Curupira Survival")
 
-    game_sys["KEYBOARD"] = game_sys["WINDOW"].get_keyboard()
-    game_sys["MOUSE"] = game_sys["WINDOW"].get_mouse()
+    globals.KEYBOARD = globals.WINDOW.get_keyboard()
+    globals.MOUSE = globals.WINDOW.get_mouse()
 
-    game_sys["STATE_SWITCHER"] = "MENU"
+    globals.current_state = "MENU"
 
 init()
 
 while True:
-    if game_sys["STATE_SWITCHER"] == "GAME":
-        game.run(game_sys)
-    elif game_sys["STATE_SWITCHER"] == "GAME_OVER":
-        game_over(game_sys)
-    elif game_sys["STATE_SWITCHER"] == "MENU":
-        mostrar_menu(game_sys)
-    elif game_sys["STATE_SWITCHER"] == "CONFIG":
-        mostrar_configs(game_sys)
+    current_state = globals.current_state
+
+    if current_state == "GAME":
+        game.run()
+    elif current_state == "GAME_OVER":
+        game_over()
+    elif current_state == "MENU":
+        mostrar_menu()
+        globals.WINDOW.update()
+    elif current_state == "CONFIG":
+        mostrar_configs()
+        globals.WINDOW.update()
+    
