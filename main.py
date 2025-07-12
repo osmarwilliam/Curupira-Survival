@@ -9,6 +9,7 @@
 # BUGS CONHECIDOS:
 # - inimigos spawnando na tua frente, eles spawnam em coordenadas fixas, ajuste para coordenadas a partir do 
 # player
+# TODO: ARRANJAR UM METODO DO SPRITE VIRAR DE ACORDO COM A DIREÇÃO DO INIMIGO
 
 from PPlay.window import *
 from PPlay.sprite import *

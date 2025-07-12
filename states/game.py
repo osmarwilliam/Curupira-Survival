@@ -46,22 +46,17 @@ def draw_scenario():
         if object["TYPE"] == "XP":
             object["SPRITE"].update()
 
-    for enemy in enemies.enemies_list:
+    for enemy in enemies.enemies_list: # TODO: Ajeitar inversão do sprite
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
-        if enemy["TYPE"] == "JAVALI":
+        #enemy["SPRITE_L"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1]) 
+
+        if enemy["TYPE"] == "LENHADOR":
+            #if enemy["SPRITE_R"].x > player.player["SPRITE"].x:
+            #    enemy["SPRITE_L"].update()
+            #    enemy["SPRITE_L"].draw()
+            #else:
             enemy["SPRITE"].update()
-        enemy["SPRITE"].draw()
-
-def voltar_estado_inicial():
-    global start_time, delta_t
-    start_time = None
-    delta_t = None
-
-    # Volta os dados do jogo p/a o estado inicial  
-    player.reset()
-    objects.reset()
-    enemies.reset()
-    waves.reset()
+            enemy["SPRITE"].draw()
 
 def collision_detection():
     """
@@ -140,7 +135,7 @@ def run(game_sys):
         draw_scenario()
 
         if player.player["HP"] <= 0:
-            voltar_estado_inicial()
+            utils.reset_game()
             game_sys["STATE_SWITCHER"] = "GAME_OVER"
             return 0
 

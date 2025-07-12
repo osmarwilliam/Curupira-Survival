@@ -1,5 +1,5 @@
 from PPlay.gameimage import *
-import objects
+import objects,player,enemies,waves
 
 def draw_version(window):
     game_version = "ALPHA VERSION"
@@ -52,3 +52,14 @@ def draw_background(window, cam_offset):
             y = start_y + j * tile_h
             tile.set_position(x, y)
             tile.draw()
+
+def reset_game():
+    global start_time, delta_t
+    start_time = None
+    delta_t = None
+
+    # Volta os dados do jogo p/a o estado inicial  
+    player.reset()
+    objects.reset()
+    enemies.reset()
+    waves.reset()

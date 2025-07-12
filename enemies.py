@@ -5,11 +5,13 @@ from PPlay.sprite import *
 
 enemies_list = []
 
-def spawn(type, window): # Realmente tenho que passar window?
+def spawn(type):
     x_left = random.randint(-200, -100)
-    x_right = random.randint(window.width + 100, window.width + 200)
+    #x_right = random.randint(window.width + 100, window.width + 200)
+    x_right = 900
     y_up = random.randint(-200, -100)
-    y_down = random.randint(window.height + 100, window.height + 200)
+    #y_down = random.randint(window.height + 100, window.height + 200)
+    y_down = 900
 
     new_enemy = {
         "TYPE": type.upper(),
@@ -25,8 +27,7 @@ def spawn(type, window): # Realmente tenho que passar window?
         new_enemy["SPEED"] = 150
 
         new_enemy["SPRITE"] = Sprite("assets/javali.png", frames = 3)
-        new_enemy["SPRITE"].set_sequence_time(0,3,200)
-        new_enemy["SPRITE"].play()
+        new_enemy["SPRITE"].set_total_duration(1000)
         
         new_enemy["CHARGE_ACTIVATION_DISTANCE"] = 150
         new_enemy["CHARGE_MODE"] = False
@@ -36,7 +37,9 @@ def spawn(type, window): # Realmente tenho que passar window?
         new_enemy["HP"] = 100
         new_enemy["ATK"] = 5
         new_enemy["SPEED"] = 100
-        new_enemy["SPRITE"] = Sprite("assets/lenhador.png")
+        
+        new_enemy["SPRITE"] = Sprite("assets/lenhador.png", frames = 3)
+        new_enemy["SPRITE"].set_total_duration(1000)
     elif new_enemy["TYPE"] == "CACADOR":
         new_enemy["HP"] = 100
         new_enemy["SPRITE"] = Sprite("assets/cacador.png")
@@ -98,8 +101,6 @@ def javali_ai(enemy, player_x, player_y, delta_t):
     else:
         enemy["X"] += dir_x * enemy["SPEED"] * delta_t
         enemy["Y"] += dir_y * enemy["SPEED"] * delta_t
-
-    
 
 def think(cam_offset, delta_t):
     """
