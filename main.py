@@ -1,6 +1,5 @@
 # TODO LIST:
 # IMPLEMENTAR ITENS
-# 0.2 - Arrumar bug da flecha - fazer ela seguir linearmente
 # 0.3 - Remover projéteis que saem muito da tela
 # 1 - PLAYER STATS
 # 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual=
@@ -16,6 +15,7 @@
 # TODO: FAZER ANIMAÇÃO DO CAÇADOR AJOELHANDO E MIRANDO PARA ATIRAR
 # TODO: FAZER ANIMAÇÃO DE CHARGE DO JAVALI
 # TODO: Ajustar a posição dos botões no menu de configurações
+# TODO: Fazer animação idle do curupira
 
 from PPlay.window import *
 from PPlay.sprite import *

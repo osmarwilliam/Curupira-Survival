@@ -25,9 +25,8 @@ def spawn(janela):
     
     player["ENEMIES_KILLED"] = 0
 
-    player["SPRITE"] = Sprite("assets/curupira.png", frames = 2)
-    player["SPRITE"].set_loop(0)
-    player["SPRITE"].set_total_duration(0)    
+    player["SPRITE"] = Sprite("assets/curupira.png", frames = 3)
+    player["SPRITE"].set_total_duration(700)    
     player["SPRITE"].set_position(
         (janela.width-player["SPRITE"].width)//2, 
         (janela.height - player["SPRITE"].height)//2
@@ -40,15 +39,19 @@ def input(KEYBOARD, MOUSE):
 
     if KEYBOARD.key_pressed("W"):
         cam_offset[1] -= VELOCIDADE * delta_t
+        player["SPRITE"].update()
     elif KEYBOARD.key_pressed("S"):
         cam_offset[1] += VELOCIDADE * delta_t
-
+        player["SPRITE"].update()
+    
     if KEYBOARD.key_pressed("A"):
         cam_offset[0] -= VELOCIDADE * delta_t
-        change_side("LEFT")
+        player["SPRITE"].update()
+        #change_side("LEFT")
     elif KEYBOARD.key_pressed("D"):
         cam_offset[0] += VELOCIDADE * delta_t
-        change_side("RIGHT")
+        player["SPRITE"].update()
+        #change_side("RIGHT")
 
     if game.manual_mode and MOUSE.is_button_pressed(1) and MOUSE.is_on_screen() and player["ATK-COOLDOWN"] < pygame.time.get_ticks() - last_player_attack:
         alvo = MOUSE.get_position()
