@@ -1,6 +1,8 @@
 import random
+import math
 
 from PPlay.sprite import *
+import player
 
 objects_list = []
 
@@ -20,10 +22,83 @@ def spawn(type):
 
     objects_list.append(new_object)
 
-def arrow_spawn(x, y, target_x, target_y):
-    dx = target_x - x
-    dy = target_y - y
+def fireball_spawn(player_x, player_y, target_x, target_y):
+    player_width = player.player["SPRITE"].width
+    player_height = player.player["SPRITE"].height
+
+    # Corrige o x e o y para ficar no meio:
+    player_x += player_width//2
+    player_y += player_height//2
+
+    dx = target_x - player_x
+    dy = target_y - player_y
     distancia = (dx**2 + dy**2)**0.5
+
+    angle = math.degrees(math.atan2(-dy,dx))
+    
+    print(int(angle))
+    spawn_pos_x = player_x
+    spawn_pos_y = player_y
+    if -45 < int(angle) < 45: # Spawna na direita do player
+       spawn_pos_x += player_width//2 + 20
+       print("DIREITA")  
+    elif 45 < int(angle) < 135: # Spawna em cima do player=
+       spawn_pos_y -= player_height//2 + 20
+       print("CIMA")
+    elif 135 < int(angle) < -135: # Spawna na esquerda do player
+       print("ESQUERDA")
+       spawn_pos_x -= player_width//2 + 20
+    elif -135 < int(angle) < -45: # Spawna embaixo do player
+       print("EMBAIXO")
+       spawn_pos_y += player_height//2 + 20
+
+    if distancia == 0: # Evita divisão por 0
+        dir_x, dir_y = 0,0
+    else:
+        dir_x = dx / distancia
+        dir_y = dy / distancia
+
+    fireball = {
+        "TYPE": "FIREBALL",
+        "SPEED": 300,
+        "X": spawn_pos_x,
+        "Y": spawn_pos_y,
+        "DIR_X": dir_x,
+        "DIR_Y": dir_y,
+        "SPRITE": Sprite("assets/bola-fogo.png", frames=4),
+    }
+    fireball["SPRITE"].set_total_duration(300)
+    objects_list.append(fireball)
+
+def arrow_spawn(player_x, player_y, target_x, target_y):
+    player_width = player.player["SPRITE"].width
+    player_height = player.player["SPRITE"].height
+
+    # Corrige o x e o y para ficar no meio:
+    player_x += player_width//2
+    player_y += player_height//2
+
+    dx = target_x - player_x
+    dy = target_y - player_y
+    distancia = (dx**2 + dy**2)**0.5
+
+    angle = math.degrees(math.atan2(-dy,dx))
+    
+    print(int(angle))
+    spawn_pos_x = player_x
+    spawn_pos_y = player_y
+    if -45 < int(angle) < 45: # Spawna na direita do player
+       spawn_pos_x += player_width//2 + 20
+       print("DIREITA")  
+    elif 45 < int(angle) < 135: # Spawna em cima do player=
+       spawn_pos_y -= player_height//2 + 20
+       print("CIMA")
+    elif 135 < int(angle) < -135: # Spawna na esquerda do player
+       print("ESQUERDA")
+       spawn_pos_x -= player_width//2 + 20
+    elif -135 < int(angle) < -45: # Spawna embaixo do player
+       print("EMBAIXO")
+       spawn_pos_y += player_height//2 + 20
 
     if distancia == 0: # Evita divisão por 0
         dir_x, dir_y = 0,0
@@ -34,13 +109,14 @@ def arrow_spawn(x, y, target_x, target_y):
     new_arrow = {
         "TYPE": "ARROW",
         "SPEED": 300,
-        "X": x,
-        "Y": y,
+        "X": spawn_pos_x,
+        "Y": spawn_pos_y,
         "DIR_X": dir_x,
         "DIR_Y": dir_y,
-        "SPRITE": Sprite("assets/flecha.png")
+        "SPRITE": Sprite("assets/flecha.png"),
     }
-    
+    new_arrow["ROTATED_SURFACE"] = pygame.transform.rotate(new_arrow["SPRITE"].image, angle)
+
     objects_list.append(new_arrow)
 
 def drop_xp(enemy):

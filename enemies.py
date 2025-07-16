@@ -54,6 +54,19 @@ def spawn(type):
 def reset():
     enemies_list.clear()
 
+def cacador_ai(enemy, player_x, player_y, delta_t):
+    dir_x = player_x - enemy["X"]
+    dir_y = player_y - enemy["Y"]
+
+    distancia = (dir_x**2 + dir_y**2)**0.5 # Teorema de Pitágoras
+
+    if distancia > 0: # Evita divisão por 0
+        dir_x /= distancia
+        dir_y /= distancia
+
+    enemy["X"] += dir_x * enemy["SPEED"] * delta_t
+    enemy["Y"] += dir_y * enemy["SPEED"] * delta_t
+
 def lenhador_ai(enemy, player_x, player_y, delta_t):
     dir_x = player_x - enemy["X"]
     dir_y = player_y - enemy["Y"]
@@ -117,5 +130,7 @@ def think(cam_offset, delta_t):
     for enemy in enemies_list:
         if enemy["TYPE"] == "JAVALI":
             javali_ai(enemy, player_x, player_y, delta_t)
-        if enemy["TYPE"] == "LENHADOR" or enemy["TYPE"] == "CACADOR":
+        if enemy["TYPE"] == "LENHADOR":
             lenhador_ai(enemy, player_x, player_y, delta_t)
+        if enemy["TYPE"] == "CACADOR":
+            cacador_ai(enemy, player_x, player_y, delta_t)

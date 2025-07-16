@@ -22,14 +22,11 @@ def update_scenario():
             Coordenada corrigida com offset -> A coordenada de onde o objeto está na tela corrigido com o offset da câmera
 
     Obs. 2: Coordenadas reais de objetos estáticos não são atualizadas pois eles não se movimentam
-    
-    Args: 
-        delta_t: delta time da janela
     """
     global delta_t
 
     for object in objects.objects_list:
-        if object["TYPE"] == "ARROW":
+        if object["TYPE"] == "FIREBALL":
             object["X"] += object["DIR_X"] * object["SPEED"] * delta_t
             object["Y"] += object["DIR_Y"] * object["SPEED"] * delta_t
 
@@ -40,10 +37,20 @@ def draw_scenario():
     """
     for object in objects.objects_list:
         object["SPRITE"].set_position(object["X"] - cam_offset[0], object["Y"] - cam_offset[1])
-        object["SPRITE"].draw()
 
-        if object["TYPE"] == "XP":
+        if object["TYPE"] == "ARROW":
+            sprite = object["SPRITE"]
+
+            rotated_surface = object["ROTATED_SURFACE"]
+            rect = rotated_surface.get_rect(center=(sprite.x, sprite.y))
+
+            globals.WINDOW.get_screen().blit(rotated_surface, rect)
+        elif object["TYPE"] == "FIREBALL":
             object["SPRITE"].update()
+            object["SPRITE"].draw()
+        elif object["TYPE"] == "XP":
+            object["SPRITE"].update()
+            object["SPRITE"].draw()
 
     for enemy in enemies.enemies_list: # TODO: Ajeitar inversão do sprite
         enemy["SPRITE"].set_position(enemy["X"] - cam_offset[0], enemy["Y"] - cam_offset[1])
@@ -65,23 +72,32 @@ def collision_detection():
     # TODO: otimizar a detecção de colisão igual o do space invaders
     # TODO: Colisão entre sprites tá muito bugada, parece até que o collided perfect não tá funcionando
     for object in objects.objects_list:
-        if object["TYPE"] == "ARROW":
+        if object["TYPE"] == "FIREBALL":
             X_MIN, X_MAX = player_sprite.x - WINDOW.width, player_sprite.x + WINDOW.width
             Y_MIN, Y_MAX = player_sprite.y - WINDOW.height, player_sprite.y + WINDOW.height
             
-            # Primeiro verifica se atingiu algum inimigo
+            # VERIFICAÇÃO DE COLISÃO COM INIMIGO
             for enemy in enemies.enemies_list:
-                if object["SPRITE"].collided_perfect(enemy["SPRITE"]):
+                enemy_sprite = enemy["SPRITE"]
+                fireball_sprite = object["SPRITE"]
+
+                # BUGADO
+                verificavel = not(enemy_sprite.x > fireball_sprite.x + fireball_sprite.width or
+                                  enemy_sprite.x + enemy_sprite.width < fireball_sprite.x or
+                                  enemy_sprite.y > fireball_sprite.y + fireball_sprite.height or
+                                  enemy_sprite.y + enemy_sprite.height < fireball_sprite.y
+                                  )
+
+                if verificavel and object["SPRITE"].collided_perfect(enemy["SPRITE"]):
+                    print("VERIFICAVEL")
                     objects.drop_xp(enemy)
                     objects.objects_list.remove(object)
                     enemies.enemies_list.remove(enemy)
                     player.player["ENEMIES_KILLED"] += 1
                     break
-
             # Verifica se saiu dos limites da "tela". Não preciso me preocupar com o tamanho exato do sprite, já que essa remoção não será vista pelo jogador
             if not(X_MIN <= object["SPRITE"].x <= X_MAX and Y_MIN <= object["SPRITE"].y <= Y_MAX): 
                 objects.objects_list.remove(object)
-
         elif object["TYPE"] == "XP" and object["SPRITE"].collided(player_sprite):
                 player.player["XP"] += object["VALUE"]
                 globals.XP_SOUND.play()
@@ -156,7 +172,5 @@ def run():
 
         desenhar_ui(player.player)
 
-        #utils.draw_version(WINDOW)
-        #WINDOW.clear()
         WINDOW.update()
         
