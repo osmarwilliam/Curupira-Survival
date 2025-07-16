@@ -4,6 +4,7 @@ import states.game as game
 from PPlay.gameimage import *
 from PPlay.sprite import *
 from player import player
+from player import item_list
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -36,7 +37,14 @@ def mostrar_itens(janela): # Desenha os "contâiners" dos itens
     # Código temporário
     pygame.draw.rect(janela.get_screen(), BLACK, (10, y_ui, 30*5 + 5*6, 30*2 + 5*3))
     
+    # y_ui = 60
+
+    # SLOT 1
     pygame.draw.rect(janela.get_screen(), GRAY, (15, y_ui+5, 30, 30))
+    # TODO: mudar esse set position ao adiconar o item ao player
+    item_list[0].set_position(30 - item_list[0].width/2, y_ui + 20 - item_list[0].height/2)
+    item_list[0].draw()
+
     pygame.draw.rect(janela.get_screen(), GRAY, (50, y_ui+5, 30, 30))  # 10 + 5*2 + 30 = 50
     pygame.draw.rect(janela.get_screen(), GRAY, (85, y_ui+5, 30, 30))  # 10 + 5*3 + 30*2 = 85
     pygame.draw.rect(janela.get_screen(), GRAY, (120, y_ui+5, 30, 30)) # 10 + 5*4 + 30*3 = 120

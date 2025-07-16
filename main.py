@@ -1,6 +1,5 @@
 # TODO LIST:
 # IMPLEMENTAR ITENS
-# 0.3 - Remover projéteis que saem muito da tela
 # 1 - PLAYER STATS
 # 3 - Uma opção nas configurações para alterar entre mira/ataque automático ou manual=
 # TODO: otimizar a detecção de colisão de projéteis igual o do space invaders
@@ -8,7 +7,6 @@
 # BUGS CONHECIDOS:
 # - inimigos spawnando na tua frente, eles spawnam em coordenadas fixas, ajuste para coordenadas a partir do 
 # player
-# TODO: ARRANJAR UM METODO DO SPRITE VIRAR DE ACORDO COM A DIREÇÃO DO INIMIGO
 # TODO: ADICIONAR EFEITO SONORO DE QUANDO JOGADOR COLETA ITEM AUXILIAR
 # TODO: FAZER A MÚSICA DE FUNDO PAUSAR QUANDO APERTAR O BOTÃO DO MENU
 # TODO: Colisão entre sprites tá muito bugada, parece até que o collided perfect não tá funcionando

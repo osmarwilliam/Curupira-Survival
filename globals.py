@@ -8,4 +8,4 @@ XP_SOUND = None
 
 current_state = None
 # 0 -> Desativado; 1 -> Ativado
-manual_mode = 0
+manual_mode = 1

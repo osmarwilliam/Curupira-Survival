@@ -9,17 +9,22 @@ import states.game as game
 import objects
 
 player = {}
+item_list = []
 VELOCIDADE = 250
 last_player_attack = 0
+
+def add_item(item):
+    if item == "FIREBALL":
+        item_list.append(Sprite("assets/fireball_icon.png"))
 
 def spawn():
     WINDOW = globals.WINDOW
 
     player["HP"] = 100
-    player["ATK"] = 1 # Attack
+    player["ATK"] = 1
     player["ATK-COOLDOWN"] = 2500
     player["RES"] = 1 # Resistance
-    player["SPD"] = 1 # Speed
+    player["SPD"] = 1
 
     player["LEVEL"] = 0
     player["XP"] = 0
@@ -37,6 +42,9 @@ def spawn():
     # 1: Olhando p/a direita
     # 0: Olhando p/a esquerda
     player["FACING_RIGHT"] = 1
+
+    add_item("FIREBALL")
+
 
 def input(KEYBOARD, MOUSE):
     global VELOCIDADE, last_player_attack
@@ -64,7 +72,7 @@ def input(KEYBOARD, MOUSE):
         player_x = player["SPRITE"].x
         player_y = player["SPRITE"].y
         
-        objects.arrow_spawn(player_x + game.cam_offset[0], 
+        objects.fireball_spawn(player_x + game.cam_offset[0], 
             player_y + game.cam_offset[1], 
             alvo[0] + game.cam_offset[0], 
             alvo[1] + game.cam_offset[1]
